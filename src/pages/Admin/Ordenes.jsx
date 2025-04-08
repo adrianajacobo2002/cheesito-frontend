@@ -79,11 +79,6 @@ const AdminOrdenes = () => {
 
   const ordenesFiltradas = aplicarFiltros();
 
-  const calcularSubtotal = (orden) =>
-    orden.detalleOrden.reduce((total, d) => total + d.subtotal, 0);
-
-  const calcularTotal = (subtotal) => subtotal + subtotal * 0.1;
-
   return (
     <Box sx={{ padding: "30px", backgroundColor: "#ffffff", minHeight: "100vh" }}>
       <Typography
@@ -204,9 +199,6 @@ const AdminOrdenes = () => {
           </TableHead>
           <TableBody>
             {ordenesFiltradas.map((orden, index) => {
-              const subtotal = calcularSubtotal(orden);
-              const total = calcularTotal(subtotal);
-
               return (
                 <TableRow key={orden.id_orden}>
                   <TableCell sx={{ fontWeight: "bold", color: "#fe7f2d", fontFamily: "Poppins, sans-serif" }}>
@@ -221,8 +213,8 @@ const AdminOrdenes = () => {
                   </TableCell>
                   <TableCell sx={{ fontFamily: "Poppins, sans-serif" }}>{orden.nombre_cliente}</TableCell>
                   <TableCell sx={{ fontFamily: "Poppins, sans-serif" }}>M{orden.mesa?.num_mesa || "-"}</TableCell>
-                  <TableCell sx={{ fontFamily: "Poppins, sans-serif" }}>${subtotal.toFixed(2)}</TableCell>
-                  <TableCell sx={{ fontFamily: "Poppins, sans-serif" }}>${total.toFixed(2)}</TableCell>
+                  <TableCell sx={{ fontFamily: "Poppins, sans-serif" }}>--</TableCell>
+                  <TableCell sx={{ fontFamily: "Poppins, sans-serif" }}>--</TableCell>
                   <TableCell>
                     <Button
                       variant="contained"

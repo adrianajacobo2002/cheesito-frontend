@@ -39,7 +39,18 @@ const MesaDos = ({ num_mesa, estado, ordenes_activas = [], onClick, onDelete }) 
                 </IconButton>
               )}
             </div>
-            <p style={{ fontFamily: 'Poppins, sans-serif' }}>{textoCliente}</p>
+            <p
+              style={{
+                fontFamily: 'Poppins, sans-serif',
+                fontSize: '0.9rem',
+                textAlign: 'center',
+                wordBreak: 'break-word',
+                lineHeight: '1.2',
+                marginTop: '5px'
+              }}
+            >
+              {textoCliente}
+            </p>
           </div>
           <div className="asientos-inferiores-dos">
             <div className="asiento-oval"></div>
