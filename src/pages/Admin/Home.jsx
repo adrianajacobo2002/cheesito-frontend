@@ -33,27 +33,14 @@ const AdminHome = () => {
   const fetchPlatillos = async () => {
     try {
       const todos = await PlatillosService.getAll();
+
       const disponibles = todos.filter(p => p.inventario.cantidad_disponible > 0 && p.tipo === 'comida');
       const fueraStockComida = todos.filter(p => p.inventario.cantidad_disponible === 0 && p.tipo === 'comida');
       const fueraStockBebida = todos.filter(p => p.inventario.cantidad_disponible === 0 && p.tipo === 'bebida');
 
-      setPizzasDisponibles(disponibles.map(p => ({
-        id_inventario: p.inventario.id_inventario,
-        cantidad_disponible: p.inventario.cantidad_disponible,
-        platillo: p
-      })));
-
-      setPizzasFueraStock(fueraStockComida.map(p => ({
-        id_inventario: p.inventario.id_inventario,
-        cantidad_disponible: p.inventario.cantidad_disponible,
-        platillo: p
-      })));
-
-      setBebidasFueraStock(fueraStockBebida.map(p => ({
-        id_inventario: p.inventario.id_inventario,
-        cantidad_disponible: p.inventario.cantidad_disponible,
-        platillo: p
-      })));
+      setPizzasDisponibles(disponibles);
+      setPizzasFueraStock(fueraStockComida);
+      setBebidasFueraStock(fueraStockBebida);
     } catch (err) {
       console.error("Error al obtener platillos:", err);
     }
@@ -77,7 +64,7 @@ const AdminHome = () => {
 
   const handleChangeTab = (event, newValue) => {
     setTabValue(newValue);
-  }
+  };
 
   const handleCantidadChange = (e) => {
     setCantidad(e.target.value);
@@ -92,10 +79,10 @@ const AdminHome = () => {
       }, 100);
       return;
     }
-  
+
     try {
-      await PlatillosService.agregarStock(selectedPlatillo.id_inventario, cantidadInt);
-      handleCloseModal(); // Cerramos primero la modal
+      await PlatillosService.agregarStock(selectedPlatillo.inventario.id_inventario, cantidadInt);
+      handleCloseModal();
       setTimeout(() => {
         Swal.fire('Stock Actualizado', 'El stock fue modificado correctamente.', 'success');
       }, 100);
@@ -108,16 +95,16 @@ const AdminHome = () => {
       }, 100);
     }
   };
-  
+
   const handleEliminar = async () => {
-    if (selectedPlatillo.cantidad_disponible > 0) {
+    if (selectedPlatillo.inventario.cantidad_disponible > 0) {
       handleCloseModal();
       setTimeout(() => {
         Swal.fire('No permitido', 'No puedes eliminar un platillo con stock mayor a cero.', 'warning');
       }, 100);
       return;
     }
-  
+
     const result = await Swal.fire({
       title: '¿Estás seguro?',
       text: 'Esta acción no se puede deshacer',
@@ -128,10 +115,10 @@ const AdminHome = () => {
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar',
     });
-  
+
     if (result.isConfirmed) {
       try {
-        await PlatillosService.eliminar(selectedPlatillo.platillo.id_platillo);
+        await PlatillosService.delete(selectedPlatillo.id_platillo);
         handleCloseModal();
         setTimeout(() => {
           Swal.fire('Eliminado', 'El platillo fue eliminado correctamente.', 'success');
@@ -146,9 +133,9 @@ const AdminHome = () => {
       }
     }
   };
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column", backgroundColor: "#fff", padding: "20px", minHeight: "100vh" }}>
-      {/* Encabezado */}
       <Grid container alignItems="center" justifyContent="space-between">
         <Grid item xs={9}>
           <Typography variant="h2" sx={{ color: "#fe7f2d", fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}>
@@ -172,21 +159,19 @@ const AdminHome = () => {
         </Grid>
       </Grid>
 
-      {/* Pizzas disponibles */}
       <Grid container spacing={3} sx={{ marginTop: 2 }}>
         {pizzasDisponibles.slice(0, 5).map((platillo) => (
-          <Grid item xs={12} sm={6} md={4} lg={2.4} key={platillo.platillo.id_platillo}>
+          <Grid item xs={12} sm={6} md={4} lg={2.4} key={platillo.id_platillo}>
             <CardPizza
-              nombre={platillo.platillo.nombre}
-              imagen={platillo.platillo.imagen_url}
-              disponibles={platillo.cantidad_disponible}
+              nombre={platillo.nombre}
+              imagen={platillo.imagen_url}
+              disponibles={platillo.inventario.cantidad_disponible}
               onClick={() => handleCardClick(platillo)}
             />
           </Grid>
         ))}
       </Grid>
 
-      {/* Fuera de stock */}
       <Box sx={{ width: "100%", textAlign: "left", marginTop: "40px" }}>
         <Typography variant="h4" sx={{ color: "#fe7f2d", fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}>
           Fuera de Stock
@@ -206,10 +191,10 @@ const AdminHome = () => {
 
       <Grid container spacing={3}>
         {(tabValue === 0 ? pizzasFueraStock : bebidasFueraStock).map((platillo) => (
-          <Grid item xs={12} sm={6} md={4} lg={2.4} key={platillo.id_inventario}>
+          <Grid item xs={12} sm={6} md={4} lg={2.4} key={platillo.id_platillo}>
             <CardNoDisponible
-              pizzaName={platillo.platillo.nombre}
-              pizzaImage={platillo.platillo.imagen_url}
+              pizzaName={platillo.nombre}
+              pizzaImage={platillo.imagen_url}
               availability="No disponible"
               onClick={() => handleCardClick(platillo)}
             />

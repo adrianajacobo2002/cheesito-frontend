@@ -6,17 +6,16 @@ const CardPizza = ({ nombre, imagen, disponibles, onClick }) => {
     <Card
       onClick={onClick}
       sx={{
-        width: '100%',
-        height: '250px',
-        padding: '28px',
-        paddingY: '8px',
+        width: 225, 
+        height: 260,
+        padding: '20px 18px',
         textAlign: 'center',
         borderRadius: 2,
         boxShadow: 3,
         cursor: 'pointer',
         transition: 'transform 0.2s',
         '&:hover': {
-          transform: 'scale(1.02)',
+          transform: 'scale(1.03)',
         },
       }}
     >
@@ -25,21 +24,24 @@ const CardPizza = ({ nombre, imagen, disponibles, onClick }) => {
         alt={nombre}
         image={imagen}
         sx={{
-          height: 140,
+          height: 110,
+          maxWidth: 120,
+          margin: '0 auto',
           objectFit: 'contain',
-          backgroundColor: 'white',
+          backgroundColor: '#fff',
         }}
       />
       <CardContent>
         <Typography
           variant="body1"
-          component="div"
           gutterBottom
           sx={{
             fontWeight: 'bold',
             color: '#fe7f2d',
-            marginLeft: 1,
             fontFamily: 'Quicksand, sans-serif',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
           }}
         >
           {nombre}
@@ -49,7 +51,6 @@ const CardPizza = ({ nombre, imagen, disponibles, onClick }) => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            marginTop: 1,
             fontFamily: 'Quicksand, sans-serif',
           }}
         >

@@ -22,13 +22,13 @@ const Login = () => {
 
       switch (rol) {
         case 'admin':
-          navigate('/admin/dashboard');
+          navigate('/admin');
           break;
         case 'mesero':
-          navigate('/mesero/dashboard');
+          navigate('/mesero');
           break;
         case 'cocinero':
-          navigate('/cocinero/dashboard');
+          navigate('/cocinero');
           break;
         default:
           navigate('/no-access');

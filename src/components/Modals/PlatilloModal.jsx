@@ -1,6 +1,13 @@
 import React from 'react';
 import {
-  Dialog, DialogTitle, DialogContent, Button, TextField, Typography, Box, IconButton
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Button,
+  TextField,
+  Typography,
+  Box,
+  IconButton
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -17,7 +24,13 @@ const PlatilloModal = ({
     <Dialog
       open={open}
       onClose={handleClose}
-      PaperProps={{ style: { borderRadius: '20px', padding: '20px', maxWidth: '400px' } }}
+      PaperProps={{
+        style: {
+          borderRadius: '20px',
+          padding: '20px',
+          maxWidth: '400px'
+        }
+      }}
     >
       <DialogTitle sx={{ padding: 0 }}>
         <IconButton onClick={handleClose} sx={{ position: 'absolute', right: 8, top: 8 }}>
@@ -28,16 +41,22 @@ const PlatilloModal = ({
         {platillo && (
           <Box sx={{ textAlign: 'center' }}>
             <img
-              src={platillo.platillo.imagen_url}
-              alt={platillo.platillo.nombre}
+              src={platillo.imagen_url}
+              alt={platillo.nombre}
               style={{
-                width: '180px', height: '180px', objectFit: 'cover', borderRadius: '50%', marginBottom: '20px'
+                width: '180px',
+                height: '180px',
+                objectFit: 'cover',
+                borderRadius: '50%',
+                marginBottom: '20px'
               }}
             />
             <Typography variant="h5" sx={{ color: '#fe7f2d', fontWeight: 'bold' }}>
-              {platillo.platillo.nombre}
+              {platillo.nombre}
             </Typography>
-            <Typography>Disponibles: {platillo.cantidad_disponible}</Typography>
+            <Typography>
+              Disponibles: {platillo.inventario?.cantidad_disponible ?? 0}
+            </Typography>
 
             <TextField
               label="Cantidad a agregar"
@@ -51,7 +70,11 @@ const PlatilloModal = ({
               variant="contained"
               onClick={handleGuardarCambios}
               sx={{
-                backgroundColor: '#51bfcc', color: '#fff', fontWeight: 'bold', borderRadius: '10px', mr: 2
+                backgroundColor: '#51bfcc',
+                color: '#fff',
+                fontWeight: 'bold',
+                borderRadius: '10px',
+                mr: 2
               }}
             >
               Guardar Cambios

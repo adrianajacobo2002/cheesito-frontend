@@ -14,6 +14,7 @@ import MeseroDashboard from './pages/Mesero/Dashboard';
 import CocineroDashboard from './pages/Cocinero/Dashboard';
 
 import AdminHome from './pages/Admin/Home';
+import AdminPlatillos from './pages/Admin/Platillos'
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
         >
           <Route index element={<AdminHome />} />
           <Route path="home" element={<AdminHome />} />
+          <Route path="platillos" element={<AdminPlatillos />} />
         </Route>
 
         {/* Dashboard MESERO */}
