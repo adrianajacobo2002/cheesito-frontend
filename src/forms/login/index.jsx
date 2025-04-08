@@ -15,11 +15,9 @@ const Login = () => {
       const response = await AuthService.login(email, password);
       const { access_token, user } = response.data;
 
-      // Guardar datos
       localStorage.setItem('token', access_token);
       localStorage.setItem('user', JSON.stringify(user));
 
-      // Redirigir según el rol
       const rol = user.rol.toLowerCase();
 
       switch (rol) {
