@@ -1,0 +1,62 @@
+import React from 'react';
+import { Card, CardContent } from '@mui/material';
+import './MesaSeis.css';
+
+const MesaSeis = ({ num_mesa, estado, ordenes_activas = [], onClick }) => {
+  const hayOrdenes = ordenes_activas.length > 0;
+
+  let textoCliente = 'Disponible';
+  if (hayOrdenes) {
+    const nombres = ordenes_activas.map(o => o.nombre_cliente);
+    if (nombres.length === 1) {
+      textoCliente = nombres[0];
+    } else if (nombres.length === 2) {
+      textoCliente = `${nombres[0]}, ${nombres[1]}`;
+    } else {
+      textoCliente = `${nombres[0]}, ${nombres[1]} +${nombres.length - 2}`;
+    }
+  }
+
+  return (
+    <Card
+      onClick={onClick}
+      className={`mesa-card ${estado === 'ocupado' ? 'mesa-ocupada' : 'mesa-disponible'}`}
+      style={{
+        cursor: 'pointer',
+        display: 'inline-block',
+        backgroundColor: 'transparent',
+        padding: '20px',
+        margin: '10px',
+        borderRadius: '20px',
+        boxShadow: 'none',
+        width: '400px',
+      }}
+    >
+      <CardContent style={{ padding: 0 }}>
+        <div className="mesa-seis-container">
+          {/* Asientos superiores */}
+          <div className="asientos-superiores">
+            <div className="asiento-oval"></div>
+            <div className="asiento-oval"></div>
+            <div className="asiento-oval"></div>
+          </div>
+
+          {/* Mesa */}
+          <div className={`mesa-seis ${estado === 'ocupado' ? 'mesa-ocupada' : 'mesa-disponible'}`}>
+            <h5 style={{ fontFamily: 'QuickSand, sans-serif', fontWeight: 'bold' }}>Mesa {num_mesa}</h5>
+            <p style={{ fontFamily: 'Poppins, sans-serif' }}>{textoCliente}</p>
+          </div>
+
+          {/* Asientos inferiores */}
+          <div className="asientos-inferiores">
+            <div className="asiento-oval"></div>
+            <div className="asiento-oval"></div>
+            <div className="asiento-oval"></div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default MesaSeis;

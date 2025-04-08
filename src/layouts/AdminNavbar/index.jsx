@@ -5,6 +5,7 @@ import TableRestaurantIcon from '@mui/icons-material/TableRestaurant';
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import LogoutIcon from '@mui/icons-material/ExitToAppRounded';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import MuiDrawer from '@mui/material/Drawer';
 import { styled } from '@mui/material/styles';
 import { NavLink } from 'react-router-dom';
@@ -89,6 +90,14 @@ export default function AdminNavbar() {
             <ListItemButton component={NavLink} to="/admin/ordenes" sx={{ justifyContent: 'center', display: 'flex' }}>
               <ListItemIcon sx={{ justifyContent: 'center' }}>
                 <ShoppingCartIcon style={iconStyle} />
+              </ListItemIcon>
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem disablePadding sx={{ marginY: 2, justifyContent: 'center' }}>
+            <ListItemButton component={NavLink} to="/admin/reportes" sx={{ justifyContent: 'center', display: 'flex' }}>
+              <ListItemIcon sx={{ justifyContent: 'center' }}>
+                <AssessmentIcon style={iconStyle} />
               </ListItemIcon>
             </ListItemButton>
           </ListItem>

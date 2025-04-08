@@ -15,6 +15,9 @@ import CocineroDashboard from './pages/Cocinero/Dashboard';
 
 import AdminHome from './pages/Admin/Home';
 import AdminPlatillos from './pages/Admin/Platillos'
+import AdminMesas from './pages/Admin/Mesas'
+import AdminOrdenes from './pages/Admin/Ordenes'
+import AdminReportes from './pages/Admin/Reportes'
 
 function App() {
   return (
@@ -35,6 +38,9 @@ function App() {
           <Route index element={<AdminHome />} />
           <Route path="home" element={<AdminHome />} />
           <Route path="platillos" element={<AdminPlatillos />} />
+          <Route path="mesas" element={<AdminMesas />} />
+          <Route path="ordenes" element={<AdminOrdenes />} />
+          <Route path="reportes" element={<AdminReportes />} />
         </Route>
 
         {/* Dashboard MESERO */}

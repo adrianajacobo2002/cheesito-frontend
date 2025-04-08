@@ -1,0 +1,55 @@
+.mesa-cuatro-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .asientos-superiores,
+  .asientos-inferiores {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px; /* Aumenta el margen para los asientos superiores */
+    margin-top: 8px; /* Aumenta el margen para los asientos inferiores */
+    width: 100%;
+  }
+  
+  .asiento-oval {
+    width: 80px;
+    height: 20px;
+    background-color: #d3d3d3;
+    border-radius: 50px; /* Mantiene el estilo ovalado */
+    margin: 5px;
+  }
+  
+  .mesa-cuatro {
+    width: 260px;
+    height: 130px;
+    background-color: #f8f8f8;
+    border-radius: 40px;
+    border: 10px solid;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .mesa-ocupada {
+    border-color: #fe7f2d;
+  }
+  
+  .mesa-disponible {
+    border-color: #51bfcc;
+  }
+  
+  .mesa-cuatro h3 {
+    margin: 0;
+    font-size: 1.4em;
+  }
+  
+  .mesa-cuatro p {
+    margin: 0;
+    font-size: 1.2em;
+    color: #555;
+  }
