@@ -9,10 +9,11 @@ import Login from './forms/login';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import NoAccess from './pages/NoAccess';
 
-// Dashboards simples por rol
 import AdminDashboard from './pages/Admin/Dashboard';
 import MeseroDashboard from './pages/Mesero/Dashboard';
 import CocineroDashboard from './pages/Cocinero/Dashboard';
+
+import AdminHome from './pages/Admin/Home';
 
 function App() {
   return (
@@ -23,17 +24,20 @@ function App() {
 
         {/* Dashboard ADMIN */}
         <Route
-          path="/admin/dashboard"
+          path="/admin"
           element={
             <ProtectedRoute allowedRoles={['admin']}>
               <AdminDashboard />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route index element={<AdminHome />} />
+          <Route path="home" element={<AdminHome />} />
+        </Route>
 
         {/* Dashboard MESERO */}
         <Route
-          path="/mesero/dashboard"
+          path="/mesero"
           element={
             <ProtectedRoute allowedRoles={['mesero']}>
               <MeseroDashboard />
@@ -43,7 +47,7 @@ function App() {
 
         {/* Dashboard COCINERO */}
         <Route
-          path="/cocinero/dashboard"
+          path="/cocinero"
           element={
             <ProtectedRoute allowedRoles={['cocinero']}>
               <CocineroDashboard />
