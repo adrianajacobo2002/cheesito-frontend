@@ -1,8 +1,9 @@
 import React from 'react';
-import { Card, CardContent } from '@mui/material';
+import { Card, CardContent, IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import './MesaSeis.css';
 
-const MesaSeis = ({ num_mesa, estado, ordenes_activas = [], onClick }) => {
+const MesaSeis = ({ num_mesa, estado, ordenes_activas = [], onClick, onDelete }) => {
   const hayOrdenes = ordenes_activas.length > 0;
 
   let textoCliente = 'Disponible';
@@ -29,25 +30,27 @@ const MesaSeis = ({ num_mesa, estado, ordenes_activas = [], onClick }) => {
         margin: '10px',
         borderRadius: '20px',
         boxShadow: 'none',
-        width: '400px',
+        width: '400px'
       }}
     >
       <CardContent style={{ padding: 0 }}>
         <div className="mesa-seis-container">
-          {/* Asientos superiores */}
           <div className="asientos-superiores">
             <div className="asiento-oval"></div>
             <div className="asiento-oval"></div>
             <div className="asiento-oval"></div>
           </div>
-
-          {/* Mesa */}
           <div className={`mesa-seis ${estado === 'ocupado' ? 'mesa-ocupada' : 'mesa-disponible'}`}>
-            <h5 style={{ fontFamily: 'QuickSand, sans-serif', fontWeight: 'bold' }}>Mesa {num_mesa}</h5>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h5 style={{ fontFamily: 'QuickSand, sans-serif', fontWeight: 'bold' }}>Mesa {num_mesa}</h5>
+              {onDelete && (
+                <IconButton onClick={(e) => { e.stopPropagation(); onDelete(); }} size="small">
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              )}
+            </div>
             <p style={{ fontFamily: 'Poppins, sans-serif' }}>{textoCliente}</p>
           </div>
-
-          {/* Asientos inferiores */}
           <div className="asientos-inferiores">
             <div className="asiento-oval"></div>
             <div className="asiento-oval"></div>

@@ -1,8 +1,9 @@
 import React from 'react';
-import { Card, CardContent } from '@mui/material';
+import { Card, CardContent, IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import './MesaCuatro.css';
 
-const MesaCuatro = ({ num_mesa, estado, ordenes_activas = [], onClick }) => {
+const MesaCuatro = ({ num_mesa, estado, ordenes_activas = [], onClick, onDelete }) => {
   const hayOrdenes = ordenes_activas.length > 0;
   const nombreCliente = hayOrdenes ? ordenes_activas[0].nombre_cliente : 'Disponible';
   const textoCliente = hayOrdenes && ordenes_activas.length > 1
@@ -21,26 +22,26 @@ const MesaCuatro = ({ num_mesa, estado, ordenes_activas = [], onClick }) => {
         margin: '10px',
         borderRadius: '20px',
         boxShadow: 'none',
-        width: '300px',
+        width: '300px'
       }}
     >
       <CardContent style={{ padding: 0 }}>
         <div className="mesa-cuatro-container">
-          {/* Asientos superiores */}
           <div className="asientos-superiores">
             <div className="asiento-oval"></div>
             <div className="asiento-oval"></div>
           </div>
-
-          {/* Mesa */}
           <div className={`mesa-cuatro ${estado === 'ocupado' ? 'mesa-ocupada' : 'mesa-disponible'}`}>
-            <h5 style={{ fontFamily: 'QuickSand, sans-serif', fontWeight: 'bold' }}>
-              Mesa {num_mesa}
-            </h5>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h5 style={{ fontFamily: 'QuickSand, sans-serif', fontWeight: 'bold' }}>Mesa {num_mesa}</h5>
+              {onDelete && (
+                <IconButton onClick={(e) => { e.stopPropagation(); onDelete(); }} size="small">
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              )}
+            </div>
             <p style={{ fontFamily: 'Poppins, sans-serif' }}>{textoCliente}</p>
           </div>
-
-          {/* Asientos inferiores */}
           <div className="asientos-inferiores">
             <div className="asiento-oval"></div>
             <div className="asiento-oval"></div>
