@@ -19,6 +19,12 @@ import AdminMesas from './pages/Admin/Mesas'
 import AdminOrdenes from './pages/Admin/Ordenes'
 import AdminReportes from './pages/Admin/Reportes'
 
+import MeseroHome from './pages/Mesero/Home';
+import MeseroMesaDetalle from './pages/Mesero/MesaDetalle'
+import MeseroOrdenes from './pages/Mesero/Ordenes'
+import MeseroOrdenDetalle from './pages/Mesero/OrdenDetalle'
+import MeseroOrdenar from './pages/Mesero/Ordenar'
+
 function App() {
   return (
     <Router>
@@ -51,7 +57,14 @@ function App() {
               <MeseroDashboard />
             </ProtectedRoute>
           }
-        />
+          >
+          <Route index element={<MeseroHome />} />
+          <Route path="home" element={<MeseroHome />} />
+          <Route path="mesa-detalle" element={<MeseroMesaDetalle />} />
+          <Route path="ordenes" element={<MeseroOrdenes />} />
+          <Route path="orden-detalle" element={<MeseroOrdenDetalle />} />
+          <Route path="ordenar" element={<MeseroOrdenar />} />
+        </Route>
 
         {/* Dashboard COCINERO */}
         <Route
