@@ -13,6 +13,11 @@ const mesasService = {
     return response.data;
   },
 
+  getByIdMesero: async (id) => {
+    const response = await api.get(`/mesero/mesas/${id}`);
+    return response.data;
+  },
+
   // Crear una nueva mesa (admin)
   create: async (data) => {
     const response = await api.post('/mesas', data);
