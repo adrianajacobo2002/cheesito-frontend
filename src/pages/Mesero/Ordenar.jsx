@@ -3,7 +3,7 @@ import { Box, Typography, Divider, Grid, Tabs, Tab } from '@mui/material';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import CardPizzaMesero from '../../components/Cards/CardPizzaMesero';
-import ResumenOrden from '../../components/ResumenOrden/ResumenOrden';
+import ResumenOrden from '../../components/ResumenOrden/index';
 
 const MeseroOrdenar = () => {
   const { id_orden } = useParams();
