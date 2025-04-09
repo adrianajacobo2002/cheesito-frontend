@@ -3,27 +3,29 @@ import {
   Routes,
   Route,
   Navigate,
-} from 'react-router-dom';
+} from "react-router-dom";
 
-import Login from './forms/login';
-import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
-import NoAccess from './pages/NoAccess';
+import Login from "./forms/login";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import NoAccess from "./pages/NoAccess";
 
-import AdminDashboard from './pages/Admin/Dashboard';
-import MeseroDashboard from './pages/Mesero/Dashboard';
-import CocineroDashboard from './pages/Cocinero/Dashboard';
+import AdminDashboard from "./pages/Admin/Dashboard";
+import MeseroDashboard from "./pages/Mesero/Dashboard";
+import CocineroDashboard from "./pages/Cocinero/Dashboard";
 
-import AdminHome from './pages/Admin/Home';
-import AdminPlatillos from './pages/Admin/Platillos'
-import AdminMesas from './pages/Admin/Mesas'
-import AdminOrdenes from './pages/Admin/Ordenes'
-import AdminReportes from './pages/Admin/Reportes'
+import AdminHome from "./pages/Admin/Home";
+import AdminPlatillos from "./pages/Admin/Platillos";
+import AdminMesas from "./pages/Admin/Mesas";
+import AdminOrdenes from "./pages/Admin/Ordenes";
+import AdminReportes from "./pages/Admin/Reportes";
 
-import MeseroHome from './pages/Mesero/Home';
-import MeseroMesaDetalle from './pages/Mesero/MesaDetalle'
-import MeseroOrdenes from './pages/Mesero/Ordenes'
-import MeseroOrdenDetalle from './pages/Mesero/OrdenDetalle'
-import MeseroOrdenar from './pages/Mesero/Ordenar'
+import MeseroHome from "./pages/Mesero/Home";
+import MeseroMesaDetalle from "./pages/Mesero/MesaDetalle";
+import MeseroOrdenes from "./pages/Mesero/Ordenes";
+import MeseroOrdenDetalle from "./pages/Mesero/OrdenDetalle";
+import MeseroOrdenar from "./pages/Mesero/Ordenar";
+
+import CocineroHome from './pages/Cocinero/Home';
 
 function App() {
   return (
@@ -36,7 +38,7 @@ function App() {
         <Route
           path="/admin"
           element={
-            <ProtectedRoute allowedRoles={['admin']}>
+            <ProtectedRoute allowedRoles={["admin"]}>
               <AdminDashboard />
             </ProtectedRoute>
           }
@@ -53,11 +55,11 @@ function App() {
         <Route
           path="/mesero"
           element={
-            <ProtectedRoute allowedRoles={['mesero']}>
+            <ProtectedRoute allowedRoles={["mesero"]}>
               <MeseroDashboard />
             </ProtectedRoute>
           }
-          >
+        >
           <Route index element={<MeseroHome />} />
           <Route path="home" element={<MeseroHome />} />
           <Route path="mesa-detalle" element={<MeseroMesaDetalle />} />
@@ -70,11 +72,14 @@ function App() {
         <Route
           path="/cocinero"
           element={
-            <ProtectedRoute allowedRoles={['cocinero']}>
+            <ProtectedRoute allowedRoles={["cocinero"]}>
               <CocineroDashboard />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route index element={<CocineroHome />} />
+          <Route path="home" element={<CocineroHome />} />
+        </Route>
 
         {/* Página de acceso denegado */}
         <Route path="/no-access" element={<NoAccess />} />
