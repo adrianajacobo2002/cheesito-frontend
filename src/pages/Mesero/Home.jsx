@@ -67,7 +67,7 @@ const MeseroHome = () => {
             num_mesa: mesa.num_mesa,
             estado: mesa.estado,
             nombreCliente: mesa.orden?.nombre_cliente ?? "",
-            onClick: () => navigate(`/mesa-detalle/${mesa.id_mesa}`),
+            onClick: () => navigate(`mesa-detalle/${mesa.id_mesa}`),
           };
 
           if (mesa.capacidad === 2) return <MesaDos key={mesa.id_mesa} {...commonProps} />;
