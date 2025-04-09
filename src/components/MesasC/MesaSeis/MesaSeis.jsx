@@ -8,7 +8,11 @@ const MesaSeis = ({ num_mesa, estado, ordenes_activas = [], onClick, onDelete })
 
   let textoCliente = 'Disponible';
   if (hayOrdenes) {
-    const nombres = ordenes_activas.map(o => o.nombre_cliente);
+    // Extraer nombres dependiendo si son strings o objetos
+    const nombres = ordenes_activas.map((o) =>
+      typeof o === 'string' ? o : o.nombre_cliente
+    );
+
     if (nombres.length === 1) {
       textoCliente = nombres[0];
     } else if (nombres.length === 2) {

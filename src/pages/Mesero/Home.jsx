@@ -35,8 +35,12 @@ const MeseroHome = () => {
     fetchMesas();
   }, []);
 
-  const mesasDisponibles = mesas.filter((mesa) => mesa.estado === "disponible").length;
-  const mesasOcupadas = mesas.filter((mesa) => mesa.estado === "ocupado").length;
+  const mesasDisponibles = mesas.filter(
+    (mesa) => mesa.estado === "disponible"
+  ).length;
+  const mesasOcupadas = mesas.filter(
+    (mesa) => mesa.estado === "ocupado"
+  ).length;
 
   return (
     <Box sx={{ padding: "30px", backgroundColor: "#fff", minHeight: "100vh" }}>
@@ -63,16 +67,22 @@ const MeseroHome = () => {
 
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
         {mesas.map((mesa) => {
+          const nombresClientes =
+            mesa.ordenes_activas?.map((orden) => orden.nombre_cliente) || [];
+
           const commonProps = {
             num_mesa: mesa.num_mesa,
             estado: mesa.estado,
-            nombreCliente: mesa.orden?.nombre_cliente ?? "",
+            ordenes_activas: nombresClientes,
             onClick: () => navigate(`mesa-detalle/${mesa.id_mesa}`),
           };
 
-          if (mesa.capacidad === 2) return <MesaDos key={mesa.id_mesa} {...commonProps} />;
-          if (mesa.capacidad === 4) return <MesaCuatro key={mesa.id_mesa} {...commonProps} />;
-          if (mesa.capacidad === 6) return <MesaSeis key={mesa.id_mesa} {...commonProps} />;
+          if (mesa.capacidad === 2)
+            return <MesaDos key={mesa.id_mesa} {...commonProps} />;
+          if (mesa.capacidad === 4)
+            return <MesaCuatro key={mesa.id_mesa} {...commonProps} />;
+          if (mesa.capacidad === 6)
+            return <MesaSeis key={mesa.id_mesa} {...commonProps} />;
           return null;
         })}
       </Box>

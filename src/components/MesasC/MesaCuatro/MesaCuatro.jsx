@@ -5,10 +5,15 @@ import './MesaCuatro.css';
 
 const MesaCuatro = ({ num_mesa, estado, ordenes_activas = [], onClick, onDelete }) => {
   const hayOrdenes = ordenes_activas.length > 0;
-  const nombreCliente = hayOrdenes ? ordenes_activas[0].nombre_cliente : 'Disponible';
-  const textoCliente = hayOrdenes && ordenes_activas.length > 1
-    ? `${nombreCliente} +${ordenes_activas.length - 1}`
-    : nombreCliente;
+  const nombreCliente = hayOrdenes
+  ? typeof ordenes_activas[0] === 'string'
+    ? ordenes_activas[0]
+    : ordenes_activas[0].nombre_cliente
+  : 'Disponible';
+
+const textoCliente = hayOrdenes && ordenes_activas.length > 1
+  ? `${nombreCliente} +${ordenes_activas.length - 1}`
+  : nombreCliente;
 
   return (
     <Card
