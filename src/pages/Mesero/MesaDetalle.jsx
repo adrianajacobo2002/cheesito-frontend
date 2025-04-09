@@ -12,7 +12,7 @@ const MesaDetalle = () => {
   useEffect(() => {
     const fetchMesa = async () => {
       try {
-        const data = await mesasService.getById(id);
+        const data = await mesasService.getByIdMesero(id);
         setMesaInfo(data);
         setOrdenes(data.ordenes || []);
       } catch (error) {
