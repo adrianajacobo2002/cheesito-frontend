@@ -62,7 +62,7 @@ function App() {
         >
           <Route index element={<MeseroHome />} />
           <Route path="home" element={<MeseroHome />} />
-          <Route path="mesa-detalle" element={<MeseroMesaDetalle />} />
+          <Route path="mesa-detalle/:id" element={<MeseroMesaDetalle />} />
           <Route path="ordenes" element={<MeseroOrdenes />} />
           <Route path="orden-detalle" element={<MeseroOrdenDetalle />} />
           <Route path="ordenar" element={<MeseroOrdenar />} />

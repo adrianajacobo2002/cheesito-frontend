@@ -1,44 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button } from '@mui/material';
-import CardDetalle from "../../components/Cards/CardDetalle";
+import { useParams } from 'react-router-dom';
+import mesasService from '../../services/mesasService';
+import CardDetalle from '../../components/Cards/CardDetalle';
 
 const MesaDetalle = () => {
-  const ordenes = [
-    {
-      orderNumber: '0001',
-      tableNumber: 1,
-      clientName: 'Alejandro Gonzales',
-      quantity: 3,
-      totalAmount: '$16.50',
-    },
-    {
-      orderNumber: '0002',
-      tableNumber: 1,
-      clientName: 'Guillermo Ramos',
-      quantity: 2,
-      totalAmount: '$12.50',
-    },
-    {
-      orderNumber: '0003',
-      tableNumber: 1,
-      clientName: 'Claudia Hernandez',
-      quantity: 1,
-      totalAmount: '$6.75',
-    },
-  ];
+  const { id } = useParams();
+  const [ordenes, setOrdenes] = useState([]);
+  const [mesaInfo, setMesaInfo] = useState(null);
 
-  const handlePayClick = (orderNumber) => {
-    console.log(`Pagando orden: ${orderNumber}`);
+  useEffect(() => {
+    const fetchMesa = async () => {
+      try {
+        const data = await mesasService.getById(id);
+        setMesaInfo(data);
+        setOrdenes(data.ordenes || []);
+      } catch (error) {
+        console.error('Error al obtener la mesa:', error);
+      }
+    };
+
+    if (id) fetchMesa();
+  }, [id]);
+
+  const handlePayClick = (orderId) => {
+    console.log(`Pagando orden: ${orderId}`);
+    // Aquí podrías llamar a un servicio para marcar como pagada
   };
 
-  const handleStatusClick = (orderNumber) => {
-    console.log(`Actualizar estado de orden: ${orderNumber}`);
+  const handleStatusClick = (orderId) => {
+    console.log(`Actualizar estado de orden: ${orderId}`);
+    // Aquí podrías abrir un modal o actualizar el estado
   };
 
   return (
     <Box sx={{ padding: 4 }}>
       <Typography variant="h4" sx={{ color: '#fe7f2d', fontWeight: 'bold', mb: 1 }}>
-        Mesa 1
+        Mesa {mesaInfo?.num_mesa}
       </Typography>
       <Typography variant="body2" sx={{ mb: 3 }}>
         {new Date().toLocaleDateString('es-ES')}
@@ -60,18 +58,22 @@ const MesaDetalle = () => {
       </Box>
 
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-        {ordenes.map((orden) => (
-          <CardDetalle
-            key={orden.orderNumber}
-            orderNumber={orden.orderNumber}
-            tableNumber={orden.tableNumber}
-            clientName={orden.clientName}
-            quantity={orden.quantity}
-            totalAmount={orden.totalAmount}
-            onPayClick={() => handlePayClick(orden.orderNumber)}
-            onStatusClick={() => handleStatusClick(orden.orderNumber)}
-          />
-        ))}
+        {ordenes.length > 0 ? (
+          ordenes.map((orden) => (
+            <CardDetalle
+              key={orden.id_orden}
+              orderNumber={orden.id_orden}
+              tableNumber={mesaInfo?.num_mesa}
+              clientName={orden.nombre_cliente}
+              quantity={orden.detalles?.length ?? 0}
+              totalAmount={`$${orden.factura?.total ?? '0.00'}`}
+              onPayClick={() => handlePayClick(orden.id_orden)}
+              onStatusClick={() => handleStatusClick(orden.id_orden)}
+            />
+          ))
+        ) : (
+          <Typography>No hay órdenes activas en esta mesa.</Typography>
+        )}
       </Box>
     </Box>
   );
