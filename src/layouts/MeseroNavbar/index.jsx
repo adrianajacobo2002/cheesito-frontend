@@ -68,7 +68,7 @@ const MeseroNavbar = () => {
         {/* Íconos de navegación */}
         <List sx={{ width: '100%' }}>
           <ListItem disablePadding sx={{ marginY: 2, justifyContent: 'center' }}>
-            <ListItemButton component={NavLink} to="/mesero/home" sx={{ justifyContent: 'center', display: 'flex' }}>
+            <ListItemButton component={NavLink} to="/mesero" sx={{ justifyContent: 'center', display: 'flex' }}>
               <ListItemIcon sx={{ justifyContent: 'center' }}>
                 <HomeIcon style={iconStyle} />
               </ListItemIcon>
