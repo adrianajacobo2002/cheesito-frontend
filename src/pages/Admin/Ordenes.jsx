@@ -11,7 +11,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Paper
+  Paper,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ordenesService from "../../services/ordenesService";
@@ -31,7 +31,7 @@ const AdminOrdenes = () => {
     const fechaFormateada = hoy.toLocaleDateString("es-ES", {
       year: "numeric",
       month: "long",
-      day: "numeric"
+      day: "numeric",
     });
     setFechaActual(fechaFormateada);
   };
@@ -45,9 +45,14 @@ const AdminOrdenes = () => {
     }
   };
 
-  const handleOpen = (orden) => {
-    setOrdenSeleccionada(orden);
-    setOpen(true);
+  const handleOpen = async (orden) => {
+    try {
+      const detalleCompleto = await ordenesService.getDetalleHistorial(orden.id_orden);
+      setOrdenSeleccionada(detalleCompleto);
+      setOpen(true);
+    } catch (error) {
+      console.error("Error al cargar detalle de la orden:", error);
+    }
   };
 
   const handleClose = () => {
@@ -80,14 +85,26 @@ const AdminOrdenes = () => {
   const ordenesFiltradas = aplicarFiltros();
 
   return (
-    <Box sx={{ padding: "30px", backgroundColor: "#ffffff", minHeight: "100vh" }}>
+    <Box
+      sx={{ padding: "30px", backgroundColor: "#ffffff", minHeight: "100vh" }}
+    >
       <Typography
         variant="h3"
-        sx={{ fontWeight: "bold", color: "#fe7f2d", fontFamily: "QuickSand, sans-serif" }}
+        sx={{
+          fontWeight: "bold",
+          color: "#fe7f2d",
+          fontFamily: "QuickSand, sans-serif",
+        }}
       >
         Historial de Ordenes
       </Typography>
-      <Typography sx={{ color: "#333", marginBottom: "20px", fontFamily: "Poppins, sans-serif" }}>
+      <Typography
+        sx={{
+          color: "#333",
+          marginBottom: "20px",
+          fontFamily: "Poppins, sans-serif",
+        }}
+      >
         {fechaActual}
       </Typography>
 
@@ -112,24 +129,24 @@ const AdminOrdenes = () => {
             sx={{
               fontFamily: "Poppins, sans-serif",
               "& .MuiInputBase-root": {
-                fontFamily: "Poppins, sans-serif"
+                fontFamily: "Poppins, sans-serif",
               },
               "& .MuiInputBase-input": {
-                color: "#000"
+                color: "#000",
               },
               "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#fe7f2d"
+                borderColor: "#fe7f2d",
               },
               "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#fe7f2d"
+                borderColor: "#fe7f2d",
               },
               "& .MuiInputLabel-root": {
                 fontFamily: "Poppins, sans-serif",
-                color: "#fe7f2d"
+                color: "#fe7f2d",
               },
               "& .Mui-focused": {
-                color: "#fe7f2d"
-              }
+                color: "#fe7f2d",
+              },
             }}
           />
         </Grid>
@@ -144,43 +161,26 @@ const AdminOrdenes = () => {
             sx={{
               fontFamily: "Poppins, sans-serif",
               "& .MuiInputBase-root": {
-                fontFamily: "Poppins, sans-serif"
+                fontFamily: "Poppins, sans-serif",
               },
               "& .MuiInputBase-input": {
-                color: "#000"
+                color: "#000",
               },
               "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#fe7f2d"
+                borderColor: "#fe7f2d",
               },
               "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#fe7f2d"
+                borderColor: "#fe7f2d",
               },
               "& .MuiInputLabel-root": {
                 fontFamily: "Poppins, sans-serif",
-                color: "#fe7f2d"
+                color: "#fe7f2d",
               },
               "& .Mui-focused": {
-                color: "#fe7f2d"
-              }
+                color: "#fe7f2d",
+              },
             }}
           />
-        </Grid>
-        <Grid item xs={12} sm={2}>
-          <Button
-            variant="contained"
-            fullWidth
-            sx={{
-              height: "56px",
-              backgroundColor: "#fe7f2d",
-              color: "#fff",
-              fontWeight: "bold",
-              fontFamily: "QuickSand, sans-serif",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
-            }}
-            onClick={aplicarFiltros}
-          >
-            FILTRAR
-          </Button>
         </Grid>
       </Grid>
 
@@ -188,40 +188,85 @@ const AdminOrdenes = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}>#</TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}>Fecha</TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}>Cliente</TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}>Mesa</TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}>SubTotal</TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}>Total</TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}>Ver Más</TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}
+              >
+                #
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}
+              >
+                Fecha
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}
+              >
+                Cliente
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}
+              >
+                Mesa
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}
+              >
+                SubTotal
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}
+              >
+                Total
+              </TableCell>
+              <TableCell
+                sx={{ fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}
+              >
+                Ver Más
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {ordenesFiltradas.map((orden, index) => {
+              const subtotal = orden.factura?.subtotal;
+              const total = orden.factura?.total;
+
               return (
                 <TableRow key={orden.id_orden}>
-                  <TableCell sx={{ fontWeight: "bold", color: "#fe7f2d", fontFamily: "Poppins, sans-serif" }}>
+                  <TableCell
+                    sx={{
+                      fontWeight: "bold",
+                      color: "#fe7f2d",
+                      fontFamily: "Poppins, sans-serif",
+                    }}
+                  >
                     {index + 1}
                   </TableCell>
                   <TableCell sx={{ fontFamily: "Poppins, sans-serif" }}>
                     {new Date(orden.fecha).toLocaleDateString("es-ES", {
                       day: "2-digit",
                       month: "long",
-                      year: "numeric"
+                      year: "numeric",
                     })}
                   </TableCell>
-                  <TableCell sx={{ fontFamily: "Poppins, sans-serif" }}>{orden.nombre_cliente}</TableCell>
-                  <TableCell sx={{ fontFamily: "Poppins, sans-serif" }}>M{orden.mesa?.num_mesa || "-"}</TableCell>
-                  <TableCell sx={{ fontFamily: "Poppins, sans-serif" }}>--</TableCell>
-                  <TableCell sx={{ fontFamily: "Poppins, sans-serif" }}>--</TableCell>
+                  <TableCell sx={{ fontFamily: "Poppins, sans-serif" }}>
+                    {orden.nombre_cliente}
+                  </TableCell>
+                  <TableCell sx={{ fontFamily: "Poppins, sans-serif" }}>
+                    M{orden.mesa?.num_mesa || "-"}
+                  </TableCell>
+                  <TableCell sx={{ fontFamily: "Poppins, sans-serif" }}>
+                    {subtotal ? `$${parseFloat(subtotal).toFixed(2)}` : "--"}
+                  </TableCell>
+                  <TableCell sx={{ fontFamily: "Poppins, sans-serif" }}>
+                    {total ? `$${parseFloat(total).toFixed(2)}` : "--"}
+                  </TableCell>
                   <TableCell>
                     <Button
                       variant="contained"
                       sx={{
                         backgroundColor: "#51bfcc",
                         borderRadius: "10px",
-                        "&:hover": { backgroundColor: "#2aa7b6" }
+                        "&:hover": { backgroundColor: "#2aa7b6" },
                       }}
                       onClick={() => handleOpen(orden)}
                     >

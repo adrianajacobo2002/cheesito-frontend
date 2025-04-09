@@ -13,20 +13,12 @@ import {
   Paper
 } from '@mui/material';
 
-const calcularSubtotal = (orden) => {
-  return orden.detalleOrden.reduce((total, detalle) => total + detalle.subtotal, 0);
-};
-
-const calcularPropina = (subtotal) => subtotal * 0.1;
-
-const calcularTotal = (subtotal, propina) => subtotal + propina;
-
 const OrdenModal = ({ open, orden, onClose }) => {
   if (!orden) return null;
 
-  const subtotal = calcularSubtotal(orden);
-  const propina = calcularPropina(subtotal);
-  const total = calcularTotal(subtotal, propina);
+  const subtotal = parseFloat(orden?.factura?.subtotal || 0);
+  const propina = parseFloat(orden?.factura?.propina || 0);
+  const total = parseFloat(orden?.factura?.total || 0);
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -100,11 +92,11 @@ const OrdenModal = ({ open, orden, onClose }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {orden.detalleOrden.map((detalle, index) => (
+              {orden.detalles?.map((detalle, index) => (
                 <TableRow key={index}>
                   <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{detalle.platillo.nombre}</TableCell>
                   <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>{detalle.cantidad}</TableCell>
-                  <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>${detalle.subtotal.toFixed(2)}</TableCell>
+                  <TableCell sx={{ fontFamily: 'Poppins, sans-serif' }}>${parseFloat(detalle.subtotal).toFixed(2)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

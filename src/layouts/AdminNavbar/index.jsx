@@ -109,7 +109,7 @@ export default function AdminNavbar() {
         <Box sx={{ flexGrow: 1 }} />
         <List sx={{ width: '100%' }}>
           <ListItem disablePadding sx={{ marginY: 2, justifyContent: 'center' }}>
-            <ListItemButton component={NavLink} to="/login" sx={{ justifyContent: 'center', display: 'flex' }}>
+            <ListItemButton component={NavLink} to="/" sx={{ justifyContent: 'center', display: 'flex' }}>
               <ListItemIcon sx={{ justifyContent: 'center' }}>
                 <LogoutIcon style={iconStyle} />
               </ListItemIcon>
