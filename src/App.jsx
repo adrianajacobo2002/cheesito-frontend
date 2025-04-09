@@ -64,7 +64,7 @@ function App() {
           <Route path="mesa-detalle/:id" element={<MeseroMesaDetalle />} />
           <Route path="ordenes" element={<MeseroOrdenes />} />
           <Route path="orden-detalle" element={<MeseroOrdenDetalle />} />
-          <Route path="ordenar" element={<MeseroOrdenar />} />
+          <Route path="ordenar/:id" element={<MeseroOrdenar />} />
         </Route>
 
         {/* Dashboard COCINERO */}
