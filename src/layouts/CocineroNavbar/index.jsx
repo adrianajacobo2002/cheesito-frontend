@@ -87,7 +87,7 @@ const CocineroNavbar = () => {
           <ListItem disablePadding sx={{ marginY: 2, justifyContent: 'center' }}>
             <ListItemButton
               component={NavLink}
-              to="/login"
+              to="/"
               sx={{ justifyContent: 'center', display: 'flex' }}
             >
               <ListItemIcon sx={{ justifyContent: 'center' }}>

@@ -41,6 +41,18 @@ const ordenesService = {
   getDetalleHistorial: async (orden_id) => {
     const response = await api.get(`/ordenes/historial/${orden_id}`);
     return response.data;
+  },
+
+  getOrdenesCocinero: async () => {
+    const response = await api.get('/chef/ordenes');
+    return response.data;
+  },
+
+  actualizarEstadoDetalle: async (id_detalle_orden, nuevoEstado) => {
+    const response = await api.put(`/chef/detalle-orden/${id_detalle_orden}/estado`, {
+      estado: nuevoEstado
+    });
+    return response.data;
   }
 };
 
