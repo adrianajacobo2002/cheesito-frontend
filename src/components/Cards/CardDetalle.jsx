@@ -1,14 +1,21 @@
 import React from 'react';
 import { Card, CardContent, Typography, Button, Box, IconButton } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { useNavigate } from 'react-router-dom';
 
 const CardDetalle = ({
   orderNumber,
   tableNumber,
   clientName,
-  onPayClick,
-  onStatusClick
+  onPayClick
 }) => {
+  const navigate = useNavigate();
+
+  const handleAddClick = () => {
+    // Redirigir a /mesero/ordenar/{orderNumber}
+    navigate(`/mesero/ordenar/${orderNumber}`);
+  };
+
   return (
     <Card
       sx={{
@@ -21,9 +28,7 @@ const CardDetalle = ({
         position: 'relative',
       }}
     >
-      <CardContent
-        sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
-      >
+      <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
         <Typography
           variant="h6"
           component="div"
@@ -86,7 +91,7 @@ const CardDetalle = ({
           gap: 1,
         }}
       >
-        <IconButton onClick={onStatusClick} sx={{ color: '#fe7f2d' }}>
+        <IconButton onClick={handleAddClick} sx={{ color: '#fe7f2d' }}>
           <AddCircleIcon />
         </IconButton>
         <Button
