@@ -12,6 +12,7 @@ import {
   TableRow,
   TableCell,
   Paper,
+  CircularProgress,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ordenesService from "../../services/ordenesService";
@@ -19,6 +20,7 @@ import OrdenModal from "../../components/Modals/OrdenModal";
 
 const AdminOrdenes = () => {
   const [ordenes, setOrdenes] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [filtroNombre, setFiltroNombre] = useState("");
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFin, setFechaFin] = useState("");
@@ -42,6 +44,8 @@ const AdminOrdenes = () => {
       setOrdenes(data);
     } catch (error) {
       console.error("Error al obtener órdenes:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -84,10 +88,24 @@ const AdminOrdenes = () => {
 
   const ordenesFiltradas = aplicarFiltros();
 
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <CircularProgress sx={{ color: "#51bfcc" }} />
+      </Box>
+    );
+  }
+
   return (
-    <Box
-      sx={{ padding: "30px", backgroundColor: "#ffffff", minHeight: "100vh" }}
-    >
+    <Box sx={{ padding: "30px", backgroundColor: "#ffffff", minHeight: "100vh" }}>
       <Typography
         variant="h3"
         sx={{
@@ -126,28 +144,7 @@ const AdminOrdenes = () => {
             InputLabelProps={{ shrink: true }}
             value={fechaInicio}
             onChange={(e) => setFechaInicio(e.target.value)}
-            sx={{
-              fontFamily: "Poppins, sans-serif",
-              "& .MuiInputBase-root": {
-                fontFamily: "Poppins, sans-serif",
-              },
-              "& .MuiInputBase-input": {
-                color: "#000",
-              },
-              "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#fe7f2d",
-              },
-              "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#fe7f2d",
-              },
-              "& .MuiInputLabel-root": {
-                fontFamily: "Poppins, sans-serif",
-                color: "#fe7f2d",
-              },
-              "& .Mui-focused": {
-                color: "#fe7f2d",
-              },
-            }}
+            sx={inputDateStyle}
           />
         </Grid>
         <Grid item xs={12} sm={3}>
@@ -158,28 +155,7 @@ const AdminOrdenes = () => {
             InputLabelProps={{ shrink: true }}
             value={fechaFin}
             onChange={(e) => setFechaFin(e.target.value)}
-            sx={{
-              fontFamily: "Poppins, sans-serif",
-              "& .MuiInputBase-root": {
-                fontFamily: "Poppins, sans-serif",
-              },
-              "& .MuiInputBase-input": {
-                color: "#000",
-              },
-              "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#fe7f2d",
-              },
-              "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#fe7f2d",
-              },
-              "& .MuiInputLabel-root": {
-                fontFamily: "Poppins, sans-serif",
-                color: "#fe7f2d",
-              },
-              "& .Mui-focused": {
-                color: "#fe7f2d",
-              },
-            }}
+            sx={inputDateStyle}
           />
         </Grid>
       </Grid>
@@ -188,41 +164,14 @@ const AdminOrdenes = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell
-                sx={{ fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}
-              >
-                #
-              </TableCell>
-              <TableCell
-                sx={{ fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}
-              >
-                Fecha
-              </TableCell>
-              <TableCell
-                sx={{ fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}
-              >
-                Cliente
-              </TableCell>
-              <TableCell
-                sx={{ fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}
-              >
-                Mesa
-              </TableCell>
-              <TableCell
-                sx={{ fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}
-              >
-                SubTotal
-              </TableCell>
-              <TableCell
-                sx={{ fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}
-              >
-                Total
-              </TableCell>
-              <TableCell
-                sx={{ fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}
-              >
-                Ver Más
-              </TableCell>
+              {["#", "Fecha", "Cliente", "Mesa", "SubTotal", "Total", "Ver Más"].map((col, idx) => (
+                <TableCell
+                  key={idx}
+                  sx={{ fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}
+                >
+                  {col}
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -283,6 +232,29 @@ const AdminOrdenes = () => {
       <OrdenModal open={open} orden={ordenSeleccionada} onClose={handleClose} />
     </Box>
   );
+};
+
+const inputDateStyle = {
+  fontFamily: "Poppins, sans-serif",
+  "& .MuiInputBase-root": {
+    fontFamily: "Poppins, sans-serif",
+  },
+  "& .MuiInputBase-input": {
+    color: "#000",
+  },
+  "& .MuiOutlinedInput-notchedOutline": {
+    borderColor: "#fe7f2d",
+  },
+  "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+    borderColor: "#fe7f2d",
+  },
+  "& .MuiInputLabel-root": {
+    fontFamily: "Poppins, sans-serif",
+    color: "#fe7f2d",
+  },
+  "& .Mui-focused": {
+    color: "#fe7f2d",
+  },
 };
 
 export default AdminOrdenes;

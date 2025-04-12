@@ -5,12 +5,20 @@ import MesaSeis from "../../components/MesasC/MesaSeis/MesaSeis";
 import AgregarMesaModal from "../../components/Modals/AgregarMesaModal";
 import Swal from "sweetalert2";
 import mesasService from "../../services/mesasService";
-import { Box, Button, Typography, Grid, Chip } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  Grid,
+  Chip,
+  CircularProgress,
+} from "@mui/material";
 
 const AdminMesas = () => {
   const [mesas, setMesas] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [fechaActual, setFechaActual] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const obtenerFechaActual = () => {
     const hoy = new Date();
@@ -24,10 +32,14 @@ const AdminMesas = () => {
 
   const fetchMesas = async () => {
     try {
+      setLoading(true);
       const mesasData = await mesasService.getAll();
-      setMesas(mesasData);
+      const mesasOrdenadas = mesasData.sort((a, b) => a.id_mesa - b.id_mesa);
+      setMesas(mesasOrdenadas);
     } catch (error) {
       console.error("Error al obtener las mesas", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -91,6 +103,23 @@ const AdminMesas = () => {
     (mesa) => mesa.estado === "ocupado"
   ).length;
 
+  // Mostrar solo spinner si está cargando
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+        }}
+      >
+        <CircularProgress sx={{ color: "#51bfcc" }} />
+      </Box>
+    );
+  }
+
   return (
     <Box
       sx={{
@@ -127,13 +156,7 @@ const AdminMesas = () => {
             {fechaActual}
           </Typography>
         </Grid>
-        <Grid
-          item
-          xs={3}
-          container
-          justifyContent="flex-end"
-          sx={{ marginTop: "50px" }}
-        >
+        <Grid item xs={3} container justifyContent="flex-end" sx={{ marginTop: "50px" }}>
           <Button
             variant="contained"
             sx={{
@@ -143,6 +166,7 @@ const AdminMesas = () => {
               fontWeight: "bold",
               fontFamily: "QuickSand, sans-serif",
               padding: "10px 20px",
+              textTransform: "none"
             }}
             onClick={handleOpenModal}
           >
