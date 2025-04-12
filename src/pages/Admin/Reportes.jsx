@@ -21,6 +21,7 @@ const AdminReportes = () => {
   const [datosPlatillos, setDatosPlatillos] = useState(null);
   const [datosIngresos, setDatosIngresos] = useState(null);
   const [datosPorHora, setDatosPorHora] = useState(null);
+  const [fechaActual, setFechaActual] = useState("");
 
   const obtenerReportes = async () => {
     try {
@@ -35,7 +36,7 @@ const AdminReportes = () => {
           {
             label: "Cantidad Vendida",
             data: platillos.map(p => p.total_vendidos),
-            backgroundColor: "#00e5e5",
+            backgroundColor: "#51bfcc",
           },
         ],
       });
@@ -46,8 +47,9 @@ const AdminReportes = () => {
           {
             label: "Facturación",
             data: horas.map(h => h.total),
-            backgroundColor: "#00e5e5",
-            borderColor: "#00e5e5",
+            backgroundColor: "#51bfcc",
+            borderColor: "#51bfcc",
+
             tension: 0.4,
           },
         ],
@@ -58,18 +60,20 @@ const AdminReportes = () => {
   };
 
   const obtenerIngresosPorFecha = async () => {
-    if (!fechaInicio || !fechaFin) return;
-
     try {
       const ingresos = await reporteService.getIngresosPorFecha(fechaInicio, fechaFin);
+      if (!ingresos.length) {
+        setDatosIngresos(null);
+        return;
+      }
       setDatosIngresos({
         labels: ingresos.map(i => i.fecha),
         datasets: [
           {
             label: "Ingresos",
-            data: ingresos.map(i => i.total_ingresos),
-            backgroundColor: "#00e5e5",
-            borderColor: "#00e5e5",
+            data: ingresos.map(i => parseFloat(i.total_ingresos)),
+            backgroundColor: "#51bfcc",
+            borderColor: "#51bfcc",
             tension: 0.4,
           },
         ],
@@ -78,9 +82,20 @@ const AdminReportes = () => {
       console.error("Error al cargar ingresos por fecha:", err);
     }
   };
+  const obtenerFechaActual = () => {
+    const hoy = new Date();
+    const fechaFormateada = hoy.toLocaleDateString("es-ES", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+    setFechaActual(fechaFormateada);
+  };
 
   useEffect(() => {
+    obtenerFechaActual();
     obtenerReportes();
+    obtenerIngresosPorFecha();
   }, []);
 
   const opciones = {
@@ -95,71 +110,94 @@ const AdminReportes = () => {
       },
     },
     scales: {
-      x: { ticks: { color: "#000" }, grid: { color: "#ccc" } },
-      y: { ticks: { color: "#000" }, grid: { color: "#ccc" } },
+      x: {
+        ticks: {
+          color: "#000",
+          autoSkip: true,
+          maxTicksLimit: 10,
+        },
+        grid: { color: "#eee" }
+      },
+      y: {
+        ticks: { color: "#000" },
+        grid: { color: "#eee" }
+      },
     },
   };
 
   return (
-    <Box sx={{ width: "100%", padding: "30px", minHeight: "100vh" }}>
-      <Typography variant="h3" sx={{ color: "#ff7d24", fontWeight: "bold", mb: 1 }}>
+    <Box sx={{ width: "100%", padding: "30px", minHeight: "100vh", backgroundColor: "#fff" }}>
+      <Typography variant="h2" sx={{color: "#fe7f2d", fontWeight: "bold", fontFamily: "QuickSand, sans-serif", marginBottom: "5px"}}>
         Reportes
       </Typography>
-      <Typography variant="body1" sx={{ mb: 3, color: "#666" }}>
-        {new Date().toLocaleDateString("es-ES")}
-      </Typography>
-
-      <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid item xs={12} md={6}>
+      <Typography sx={{ color: "#666", fontFamily: "Poppins, sans-serif", marginBottom: "20px"}}>{fechaActual}</Typography>
+  
+      <Grid container spacing={3} direction="column">
+        {/* Platillos más vendidos */}
+        <Grid item xs={12}>
           <Paper sx={{ p: 3 }}>
-            <Typography sx={{ fontWeight: "bold", color: "#ff7d24", mb: 2 }}>
+            <Typography sx={{ fontWeight: "bold", color: "#fe7f2d", mb: 2, fontFamily: "QuickSand, sans-serif"}}>
               Platillos más vendidos
             </Typography>
-            <Box sx={{ height: 250 }}>
+            <Box sx={{ height: 300 }}>
               {datosPlatillos && <Bar data={datosPlatillos} options={opciones} />}
             </Box>
           </Paper>
         </Grid>
-        <Grid item xs={12} md={6}>
+  
+        {/* Horas de más facturación */}
+        <Grid item xs={12}>
           <Paper sx={{ p: 3 }}>
-            <Typography sx={{ fontWeight: "bold", color: "#ff7d24", mb: 2 }}>
+            <Typography sx={{ fontWeight: "bold", color: "#fe7f2d", mb: 2, fontFamily: "QuickSand, sans-serif"}}>
               Horas de más facturación
             </Typography>
-            <Box sx={{ height: 250 }}>
+            <Box sx={{ height: 300 }}>
               {datosPorHora && <Line data={datosPorHora} options={opciones} />}
             </Box>
           </Paper>
         </Grid>
+  
+        {/* Ingresos por fecha */}
+        <Grid item xs={12}>
+          <Paper sx={{ p: 3 }}>
+            <Typography sx={{ fontWeight: "bold", color: "#fe7f2d", mb: 2, fontFamily: "QuickSand, sans-serif"}}>
+              Ingresos por fecha
+            </Typography>
+            <Box sx={{ display: "flex", gap: 2, mb: 2, flexWrap: "wrap" }}>
+              <TextField
+                type="date"
+                value={fechaInicio}
+                onChange={(e) => setFechaInicio(e.target.value)}
+                size="small"
+              />
+              <TextField
+                type="date"
+                value={fechaFin}
+                onChange={(e) => setFechaFin(e.target.value)}
+                size="small"
+              />
+              <Button
+                variant="contained"
+                sx={{ backgroundColor: "#fe7f2d", px: 3, borderRadius: "15px", fontFamily: "Poppins, sans-serif", textTransform: 'none'}}
+                onClick={obtenerIngresosPorFecha}
+              >
+                Filtrar
+              </Button>
+            </Box>
+            <Box sx={{ height: 300, width: "100%" }}>
+              {datosIngresos ? (
+                <Line data={datosIngresos} options={opciones} />
+              ) : (
+                <Typography sx={{ color: "#888", textAlign: "center", mt: 5 }}>
+                  No hay datos disponibles para este período.
+                </Typography>
+              )}
+            </Box>
+          </Paper>
+        </Grid>
       </Grid>
-
-      <Paper sx={{ p: 3 }}>
-        <Typography sx={{ fontWeight: "bold", color: "#ff7d24", mb: 2 }}>
-          Ingresos por fecha
-        </Typography>
-        <Box sx={{ display: "flex", gap: 2, mb: 2, flexWrap: "wrap" }}>
-          <TextField
-            type="date"
-            value={fechaInicio}
-            onChange={(e) => setFechaInicio(e.target.value)}
-            size="small"
-          />
-          <TextField
-            type="date"
-            value={fechaFin}
-            onChange={(e) => setFechaFin(e.target.value)}
-            size="small"
-          />
-          <Button variant="contained" sx={{ backgroundColor: "#ff7d24", px: 3, borderRadius: "20px" }}
-            onClick={obtenerIngresosPorFecha}>
-            Filtrar
-          </Button>
-        </Box>
-        <Box sx={{ height: 300 }}>
-          {datosIngresos && <Line data={datosIngresos} options={opciones} />}
-        </Box>
-      </Paper>
     </Box>
-  );
+  );  
 };
 
 export default AdminReportes;
