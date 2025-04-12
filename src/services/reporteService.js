@@ -1,23 +1,23 @@
 import api from '../../api';
 
 const reporteService = {
-  // Platillos más vendidos
+  // 🔹 Platillos más vendidos (top 10)
   getPlatillosVendidos: async () => {
     const response = await api.get('/platillos-vendidos');
     return response.data;
   },
 
-  // Ingresos por fecha
+  // 🔹 Ingresos por fecha (rango opcional: si no se pasa, muestra todos)
   getIngresosPorFecha: async (desde, hasta) => {
     const response = await api.get('/ingresos', {
-      params: { desde, hasta },
+      params: desde && hasta ? { desde, hasta } : {},
     });
     return response.data;
   },
 
-  // Ingresos por hora
+  // 🔹 Ingresos por hora (agrupado por horas del día)
   getIngresosPorHora: async () => {
-    const response = await api.get('/facturas/por-hora'); // necesitas agregar este endpoint en el backend
+    const response = await api.get('/ingresos-por-hora'); // asegúrate de tener esta ruta en `api.php`
     return response.data;
   },
 };

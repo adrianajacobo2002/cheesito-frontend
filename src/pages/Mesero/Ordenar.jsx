@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import CardPizzaMesero from '../../components/Cards/CardPizzaMesero';
 import ResumenOrden from '../../components/ResumenOrden/index';
+import PlatillosService from '../../services/platillosService';
 
 const MeseroOrdenar = () => {
   const { id_orden } = useParams();
@@ -15,34 +16,31 @@ const MeseroOrdenar = () => {
 
   const obtenerFechaActual = () => {
     const hoy = new Date();
-    const fechaFormateada = hoy.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+    const fechaFormateada = hoy.toLocaleDateString("es-ES", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
     setFechaActual(fechaFormateada);
   };
 
   const fetchPizzas = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/inventario/pizzas/disponibles');
-      setPizzasDisponibles(response.data);
+      const todos = await PlatillosService.getAll();
+      const pizzas = todos.filter(p => p.tipo === 'comida');
+      setPizzasDisponibles(pizzas);
     } catch (error) {
-      console.error('Error al obtener las pizzas disponibles:', error);
+      console.error('Error al obtener pizzas:', error);
     }
   };
 
   const fetchBebidas = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/inventario/bebidas/disponibles');
-      setBebidasDisponibles(response.data);
+      const todos = await PlatillosService.getAll();
+      const bebidas = todos.filter(p => p.tipo === 'bebida');
+      setBebidasDisponibles(bebidas);
     } catch (error) {
-      console.error('Error al obtener las bebidas disponibles:', error);
-    }
-  };
-
-  const fetchDetallesOrden = async () => {
-    try {
-      const response = await axios.get(`http://localhost:3000/api/ordenes/${id_orden}`);
-      setDetallesOrden(response.data.detalleOrden);
-    } catch (error) {
-      console.error('Error al obtener los detalles de la orden:', error);
+      console.error('Error al obtener bebidas:', error);
     }
   };
 
@@ -92,8 +90,6 @@ const MeseroOrdenar = () => {
             )
           );
         }
-
-        fetchDetallesOrden();
       } catch (error) {
         console.error('Error al agregar el producto a la orden:', error);
         alert('Hubo un problema al agregar el producto');
@@ -141,14 +137,14 @@ const MeseroOrdenar = () => {
         {tabValue === 0 && (
           <Grid container spacing={2}>
             {pizzasDisponibles.map((pizza) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={pizza.platillo.id_platillos}>
+              <Grid item xs={12} sm={6} md={4} lg={3} key={pizza.id_platillo}>
                 <CardPizzaMesero
-                  nombre={pizza.platillo.nombre}
-                  precio={pizza.platillo.precio}
-                  availableUnits={pizza.cantidad_disponible}
-                  imageUrl={`http://localhost:3000/uploads/${pizza.platillo.image_url}`}
+                  nombre={pizza.nombre}
+                  precio={pizza.precio}
+                  availableUnits={pizza.inventario.cantidad_disponible}
+                  imageUrl={pizza.imagen_url}
                   onAddToOrder={(cantidad) => {
-                    agregarProductoAOrden(pizza.platillo.id_platillos, cantidad, 'pizza');
+                    agregarProductoAOrden(pizza.id_platillo, cantidad, 'pizza');
                   }}
                 />
               </Grid>
@@ -159,14 +155,14 @@ const MeseroOrdenar = () => {
         {tabValue === 1 && (
           <Grid container spacing={2}>
             {bebidasDisponibles.map((bebida) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={bebida.platillo.id_platillos}>
+              <Grid item xs={12} sm={6} md={4} lg={3} key={bebida.id_platillo}>
                 <CardPizzaMesero
-                  nombre={bebida.platillo.nombre}
-                  precio={bebida.platillo.precio}
-                  availableUnits={bebida.cantidad_disponible}
-                  imageUrl={`http://localhost:3000/uploads/${bebida.platillo.image_url}`}
+                  nombre={bebida.nombre}
+                  precio={bebida.precio}
+                  availableUnits={bebida.inventario.cantidad_disponible}
+                  imageUrl={bebida.imagen_url}
                   onAddToOrder={(cantidad) => {
-                    agregarProductoAOrden(bebida.platillo.id_platillos, cantidad, 'bebida');
+                    agregarProductoAOrden(bebida.id_platillo, cantidad, 'bebida');
                   }}
                 />
               </Grid>
