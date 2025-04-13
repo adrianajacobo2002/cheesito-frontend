@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-  Box, Typography, TextField, Button, Grid, Paper
+  Box, Typography, TextField, Button, Grid, Paper, CircularProgress
 } from "@mui/material";
 import { Bar, Line } from "react-chartjs-2";
 import {
@@ -22,6 +22,7 @@ const AdminReportes = () => {
   const [datosIngresos, setDatosIngresos] = useState(null);
   const [datosPorHora, setDatosPorHora] = useState(null);
   const [fechaActual, setFechaActual] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const obtenerReportes = async () => {
     try {
@@ -32,28 +33,25 @@ const AdminReportes = () => {
 
       setDatosPlatillos({
         labels: platillos.map(p => p.nombre),
-        datasets: [
-          {
-            label: "Cantidad Vendida",
-            data: platillos.map(p => p.total_vendidos),
-            backgroundColor: "#51bfcc",
-          },
-        ],
+        datasets: [{
+          label: "Cantidad Vendida",
+          data: platillos.map(p => p.total_vendidos),
+          backgroundColor: "#51bfcc",
+        }],
       });
 
       setDatosPorHora({
         labels: horas.map(h => h.hora),
-        datasets: [
-          {
-            label: "Facturación",
-            data: horas.map(h => h.total),
-            backgroundColor: "#51bfcc",
-            borderColor: "#51bfcc",
-
-            tension: 0.4,
-          },
-        ],
+        datasets: [{
+          label: "Facturación",
+          data: horas.map(h => h.total),
+          backgroundColor: "#51bfcc",
+          borderColor: "#51bfcc",
+          tension: 0.4,
+        }],
       });
+
+      setLoading(false);
     } catch (err) {
       console.error("Error al cargar reportes:", err);
     }
@@ -66,22 +64,22 @@ const AdminReportes = () => {
         setDatosIngresos(null);
         return;
       }
+
       setDatosIngresos({
         labels: ingresos.map(i => i.fecha),
-        datasets: [
-          {
-            label: "Ingresos",
-            data: ingresos.map(i => parseFloat(i.total_ingresos)),
-            backgroundColor: "#51bfcc",
-            borderColor: "#51bfcc",
-            tension: 0.4,
-          },
-        ],
+        datasets: [{
+          label: "Ingresos",
+          data: ingresos.map(i => parseFloat(i.total_ingresos)),
+          backgroundColor: "#51bfcc",
+          borderColor: "#51bfcc",
+          tension: 0.4,
+        }],
       });
     } catch (err) {
       console.error("Error al cargar ingresos por fecha:", err);
     }
   };
+
   const obtenerFechaActual = () => {
     const hoy = new Date();
     const fechaFormateada = hoy.toLocaleDateString("es-ES", {
@@ -111,11 +109,7 @@ const AdminReportes = () => {
     },
     scales: {
       x: {
-        ticks: {
-          color: "#000",
-          autoSkip: true,
-          maxTicksLimit: 10,
-        },
+        ticks: { color: "#000", autoSkip: true, maxTicksLimit: 10 },
         grid: { color: "#eee" }
       },
       y: {
@@ -125,18 +119,29 @@ const AdminReportes = () => {
     },
   };
 
+  if (loading) {
+    return (
+      <Box sx={{
+        height: "90vh", display: "flex", justifyContent: "center", alignItems: "center"
+      }}>
+        <CircularProgress sx={{ color: "#51bfcc" }} />
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ width: "100%", padding: "30px", minHeight: "100vh", backgroundColor: "#fff" }}>
-      <Typography variant="h2" sx={{color: "#fe7f2d", fontWeight: "bold", fontFamily: "QuickSand, sans-serif", marginBottom: "5px"}}>
+      <Typography variant="h2" sx={{ color: "#fe7f2d", fontWeight: "bold", fontFamily: "QuickSand, sans-serif", marginBottom: "5px" }}>
         Reportes
       </Typography>
-      <Typography sx={{ color: "#666", fontFamily: "Poppins, sans-serif", marginBottom: "20px"}}>{fechaActual}</Typography>
-  
+      <Typography sx={{ color: "#666", fontFamily: "Poppins, sans-serif", marginBottom: "20px" }}>
+        {fechaActual}
+      </Typography>
+
       <Grid container spacing={3} direction="column">
-        {/* Platillos más vendidos */}
         <Grid item xs={12}>
           <Paper sx={{ p: 3 }}>
-            <Typography sx={{ fontWeight: "bold", color: "#fe7f2d", mb: 2, fontFamily: "QuickSand, sans-serif"}}>
+            <Typography sx={{ fontWeight: "bold", color: "#fe7f2d", mb: 2, fontFamily: "QuickSand, sans-serif" }}>
               Platillos más vendidos
             </Typography>
             <Box sx={{ height: 300 }}>
@@ -144,11 +149,10 @@ const AdminReportes = () => {
             </Box>
           </Paper>
         </Grid>
-  
-        {/* Horas de más facturación */}
+
         <Grid item xs={12}>
           <Paper sx={{ p: 3 }}>
-            <Typography sx={{ fontWeight: "bold", color: "#fe7f2d", mb: 2, fontFamily: "QuickSand, sans-serif"}}>
+            <Typography sx={{ fontWeight: "bold", color: "#fe7f2d", mb: 2, fontFamily: "QuickSand, sans-serif" }}>
               Horas de más facturación
             </Typography>
             <Box sx={{ height: 300 }}>
@@ -156,29 +160,21 @@ const AdminReportes = () => {
             </Box>
           </Paper>
         </Grid>
-  
-        {/* Ingresos por fecha */}
+
         <Grid item xs={12}>
           <Paper sx={{ p: 3 }}>
-            <Typography sx={{ fontWeight: "bold", color: "#fe7f2d", mb: 2, fontFamily: "QuickSand, sans-serif"}}>
+            <Typography sx={{ fontWeight: "bold", color: "#fe7f2d", mb: 2, fontFamily: "QuickSand, sans-serif" }}>
               Ingresos por fecha
             </Typography>
             <Box sx={{ display: "flex", gap: 2, mb: 2, flexWrap: "wrap" }}>
-              <TextField
-                type="date"
-                value={fechaInicio}
-                onChange={(e) => setFechaInicio(e.target.value)}
-                size="small"
-              />
-              <TextField
-                type="date"
-                value={fechaFin}
-                onChange={(e) => setFechaFin(e.target.value)}
-                size="small"
-              />
+              <TextField type="date" value={fechaInicio} onChange={(e) => setFechaInicio(e.target.value)} size="small" />
+              <TextField type="date" value={fechaFin} onChange={(e) => setFechaFin(e.target.value)} size="small" />
               <Button
                 variant="contained"
-                sx={{ backgroundColor: "#fe7f2d", px: 3, borderRadius: "15px", fontFamily: "Poppins, sans-serif", textTransform: 'none'}}
+                sx={{
+                  backgroundColor: "#fe7f2d", px: 3, borderRadius: "15px",
+                  fontFamily: "Poppins, sans-serif", textTransform: 'none'
+                }}
                 onClick={obtenerIngresosPorFecha}
               >
                 Filtrar
@@ -197,7 +193,7 @@ const AdminReportes = () => {
         </Grid>
       </Grid>
     </Box>
-  );  
+  );
 };
 
 export default AdminReportes;
