@@ -1,177 +1,173 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Typography, Divider, Grid, Tabs, Tab } from '@mui/material';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import CardPizzaMesero from '../../components/Cards/CardPizzaMesero';
-import ResumenOrden from '../../components/ResumenOrden/index';
-import PlatillosService from '../../services/platillosService';
+import React, { useState, useEffect } from "react";
+import { Box, Typography, Divider, Grid, Tabs, Tab, Button } from "@mui/material";
+import { useParams, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+
+
+import CardPizzaMesero from "../../components/Cards/CardPizzaMesero";
+import ResumenOrden from "../../components/ResumenOrden/index";
+import PlatillosService from "../../services/platillosService";
+import ordenesService from "../../services/ordenesService";
 
 const MeseroOrdenar = () => {
-  const { id_orden } = useParams();
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const [pizzasDisponibles, setPizzasDisponibles] = useState([]);
   const [bebidasDisponibles, setBebidasDisponibles] = useState([]);
   const [tabValue, setTabValue] = useState(0);
-  const [detallesOrden, setDetallesOrden] = useState([]);
+  const [nuevosPlatillos, setNuevosPlatillos] = useState([]);
   const [fechaActual, setFechaActual] = useState("");
 
   const obtenerFechaActual = () => {
     const hoy = new Date();
-    const fechaFormateada = hoy.toLocaleDateString("es-ES", {
+    setFechaActual(hoy.toLocaleDateString("es-ES", {
       year: "numeric",
       month: "long",
       day: "numeric",
+    }));
+  };
+
+  const fetchPlatillos = async () => {
+    try {
+      const todos = await PlatillosService.getAllMesero();
+
+      const conStockOriginal = todos.map(p => ({
+        ...p,
+        inventario: {
+          ...p.inventario,
+          original: p.inventario.cantidad_disponible,
+        }
+      }));
+      setPizzasDisponibles(conStockOriginal.filter(p => p.tipo === "comida"));
+      setBebidasDisponibles(conStockOriginal.filter(p => p.tipo === "bebida"));
+    } catch (error) {
+      console.error("Error al obtener los platillos:", error);
+    }
+  };
+
+  const agregarProductoVisualmente = (nuevoPlatillo) => {
+    const cantidad = Number(nuevoPlatillo.cantidad);
+    if (cantidad <= 0) return;
+  
+    setNuevosPlatillos((prev) => {
+      const existente = prev.find(p => p.platillo_id === nuevoPlatillo.platillo_id);
+      if (existente) {
+        return prev.map(p =>
+          p.platillo_id === nuevoPlatillo.platillo_id
+            ? { ...p, cantidad: p.cantidad + cantidad }
+            : p
+        );
+      } else {
+        return [...prev, { ...nuevoPlatillo, cantidad }];
+      }
     });
-    setFechaActual(fechaFormateada);
   };
-
-  const fetchPizzas = async () => {
+  
+  const handleOrdenar = async () => {
+    if (nuevosPlatillos.length === 0){
+      Swal.fire({
+        icon: 'info',
+        title: 'Sin productos nuevos',
+        text: 'No hay productos nuevos que ordenar.',
+      });
+      return;
+    }
     try {
-      const todos = await PlatillosService.getAll();
-      const pizzas = todos.filter(p => p.tipo === 'comida');
-      setPizzasDisponibles(pizzas);
+      await ordenesService.agregarPlatillos(id, nuevosPlatillos);
+      setNuevosPlatillos([]);
+
+      await fetchPlatillos();
+
+      Swal.fire({
+        icon: 'success',
+        title: '¡Orden enviada!',
+        text: 'Platillos agregados a la orden exitosamente.',
+        timer: 2000,
+        showConfirmButton: false,
+      });
     } catch (error) {
-      console.error('Error al obtener pizzas:', error);
+      console.error("Error al ordenar:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al ordenar',
+        text: 'Ocurrió un error al enviar la orden. Inténtalo nuevamente.',
+      });
     }
   };
 
-  const fetchBebidas = async () => {
-    try {
-      const todos = await PlatillosService.getAll();
-      const bebidas = todos.filter(p => p.tipo === 'bebida');
-      setBebidasDisponibles(bebidas);
-    } catch (error) {
-      console.error('Error al obtener bebidas:', error);
-    }
+  const obtenerCantidadAgregada = (platilloId) => {
+    const agregado = nuevosPlatillos.find(p => p.platillo_id === platilloId);
+    return agregado ? agregado.cantidad : 0;
   };
 
+  const handleEliminarNuevoPlatillo = (platilloId) => {
+    const platilloEliminado = nuevosPlatillos.find(p => p.platillo_id === platilloId);
+    if (!platilloEliminado) return;
+  
+    // Restaurar inventario
+    setPizzasDisponibles(prev =>
+      prev.map(p =>
+        p.id_platillo === platilloId
+          ? {
+              ...p,
+              inventario: {
+                ...p.inventario,
+                cantidad_disponible: Math.min(
+                  p.inventario.cantidad_disponible + platilloEliminado.cantidad,
+                  p.inventario.original
+                ),
+              },
+            }
+          : p
+      )
+    );
+    setNuevosPlatillos(prev => prev.filter(p => p.platillo_id !== platilloId));
+  };
+  
+
+  
   useEffect(() => {
     obtenerFechaActual();
-    fetchPizzas();
-    fetchBebidas();
-    fetchDetallesOrden();
+    fetchPlatillos();
   }, []);
 
-  const handleDeleteDetalle = async (id_detalle_orden) => {
-    try {
-      await axios.delete(`http://localhost:3000/api/ordenes/detalles/${id_detalle_orden}`);
-      setDetallesOrden((prev) => prev.filter((d) => d.id_detalle_orden !== id_detalle_orden));
-      fetchPizzas();
-      fetchBebidas();
-    } catch (error) {
-      console.error('Error al eliminar el detalle:', error);
-      alert('Hubo un problema al eliminar el detalle');
-    }
-  };
-
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
-  };
-
-  const agregarProductoAOrden = async (platillo_id, cantidad, tipo) => {
-    if (cantidad > 0) {
-      try {
-        const detalles = [{ platillo_id, cantidad }];
-        await axios.post(`http://localhost:3000/api/ordenes/${id_orden}/platillos`, { detalles });
-
-        if (tipo === 'pizza') {
-          setPizzasDisponibles((prev) =>
-            prev.map((p) =>
-              p.platillo_id === platillo_id
-                ? { ...p, cantidad_disponible: p.cantidad_disponible - cantidad }
-                : p
-            )
-          );
-        } else if (tipo === 'bebida') {
-          setBebidasDisponibles((prev) =>
-            prev.map((b) =>
-              b.platillo_id === platillo_id
-                ? { ...b, cantidad_disponible: b.cantidad_disponible - cantidad }
-                : b
-            )
-          );
-        }
-      } catch (error) {
-        console.error('Error al agregar el producto a la orden:', error);
-        alert('Hubo un problema al agregar el producto');
-      }
-    } else {
-      alert('La cantidad debe ser mayor a 0');
-    }
-  };
-
   return (
-    <Box sx={{ display: 'flex', padding: '20px', fontFamily: 'Poppins, sans-serif' }}>
-      <Box sx={{ flex: 3, marginRight: '20px' }}>
-        <Typography variant="h3" sx={{ fontWeight: 'bold', marginBottom: '20px', color: '#fe7f2d', fontFamily: 'QuickSand, sans-serif' }}>
-          Ordenar
-        </Typography>
-        <Typography sx={{ marginBottom: "20px", fontWeight: "light", color: "#666", textAlign: 'left' }}>
-          {fechaActual}
-        </Typography>
-        <Divider sx={{ marginBottom: '20px' }} />
+    <Box sx={{ display: "flex", padding: "20px" }}>
+      <Box sx={{ flex: 3, marginRight: "20px" }}>
+        <Typography variant="h3" sx={{ fontWeight: "bold", color: "#fe7f2d" }}>Ordenar</Typography>
+        <Typography sx={{ marginBottom: "20px", color: "#666" }}>{fechaActual}</Typography>
 
-        <Box sx={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '20px' }}>
-          <Tabs
-            value={tabValue}
-            onChange={handleTabChange}
-            centered={false}
-            TabIndicatorProps={{ style: { backgroundColor: '#fe7f2d' } }}
-          >
-            <Tab label="Pizzas" sx={{
-              color: tabValue === 0 ? '#fe7f2d' : '#000',
-              fontFamily: 'Poppins, sans-serif',
-              fontWeight: 'bold',
-              '&.Mui-selected': { color: '#fe7f2d' }
-            }} />
-            <Tab label="Bebidas" sx={{
-              color: tabValue === 1 ? '#fe7f2d' : '#000',
-              fontFamily: 'Poppins, sans-serif',
-              fontWeight: 'bold',
-              '&.Mui-selected': { color: '#fe7f2d' }
-            }} />
-          </Tabs>
-        </Box>
+        <Divider sx={{ mb: 2 }} />
+        <Tabs value={tabValue} onChange={(e, v) => setTabValue(v)}>
+          <Tab label="PIZZAS" />
+          <Tab label="BEBIDAS" />
+        </Tabs>
+        <Divider sx={{ mb: 2 }} />
 
-        <Divider sx={{ marginBottom: '20px' }} />
-
-        {tabValue === 0 && (
-          <Grid container spacing={2}>
-            {pizzasDisponibles.map((pizza) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={pizza.id_platillo}>
-                <CardPizzaMesero
-                  nombre={pizza.nombre}
-                  precio={pizza.precio}
-                  availableUnits={pizza.inventario.cantidad_disponible}
-                  imageUrl={pizza.imagen_url}
-                  onAddToOrder={(cantidad) => {
-                    agregarProductoAOrden(pizza.id_platillo, cantidad, 'pizza');
-                  }}
-                />
-              </Grid>
-            ))}
-          </Grid>
-        )}
-
-        {tabValue === 1 && (
-          <Grid container spacing={2}>
-            {bebidasDisponibles.map((bebida) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={bebida.id_platillo}>
-                <CardPizzaMesero
-                  nombre={bebida.nombre}
-                  precio={bebida.precio}
-                  availableUnits={bebida.inventario.cantidad_disponible}
-                  imageUrl={bebida.imagen_url}
-                  onAddToOrder={(cantidad) => {
-                    agregarProductoAOrden(bebida.id_platillo, cantidad, 'bebida');
-                  }}
-                />
-              </Grid>
-            ))}
-          </Grid>
-        )}
+        <Grid container spacing={2}>
+          {(tabValue === 0 ? pizzasDisponibles : bebidasDisponibles).map(p => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={p.id_platillo}>
+              <CardPizzaMesero
+                nombre={p.nombre}
+                precio={Number(p.precio)}
+                availableUnits={p.inventario.cantidad_disponible}
+                imageUrl={p.imagen_url}
+                platilloId={p.id_platillo}
+                onAddToOrder={(platillo) => agregarProductoVisualmente(platillo)}
+                agregados={obtenerCantidadAgregada(p.id_platillo)}
+              />
+            </Grid>
+          ))}
+        </Grid>
       </Box>
 
-      <ResumenOrden detallesOrden={detallesOrden} onDeleteDetalle={handleDeleteDetalle} />
+      <ResumenOrden
+        nuevosPlatillos={nuevosPlatillos}
+        onOrdenar={handleOrdenar}
+        onVerDetalle={() => navigate(`/orden/detalle/${id}`)}
+        onDeleteDetalle={handleEliminarNuevoPlatillo}
+      />
     </Box>
   );
 };

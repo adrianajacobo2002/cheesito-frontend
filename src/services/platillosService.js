@@ -7,6 +7,11 @@ const PlatillosService = {
     return response.data;
   },
 
+  getAllMesero: async () => {
+    const response = await api.get('/mesero/platillos');
+    return response.data;
+  },
+
   getById: async (id) => {
     const response = await api.get(`/platillos/${id}`);
     return response.data;

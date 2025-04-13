@@ -2,8 +2,12 @@ import api from '../../api';
 
 const ordenesService = {
   // Crear una nueva orden
-  crearOrden: async (mesa_id, nombre_cliente) => {
-    const response = await api.post('/ordenes', { mesa_id, nombre_cliente });
+  crearOrden: async (mesa_id, nombre_cliente, mesero_id) => {
+    const response = await api.post('/ordenes', { 
+      mesa_id,
+      nombre_cliente,
+      mesero_id
+  });
     return response.data;
   },
 
@@ -27,7 +31,7 @@ const ordenesService = {
 
   // Obtener detalle de una orden específica del mesero autenticado
   getDetalleOrden: async (orden_id) => {
-    const response = await api.get(`/ordenes/${orden_id}`);
+    const response = await api.get(`/ordenes/${orden_id}/resumen`);
     return response.data;
   },
 
@@ -53,7 +57,15 @@ const ordenesService = {
       estado: nuevoEstado
     });
     return response.data;
+  },
+
+  eliminarDetalle: async (id_detalle, cantidad) => {
+    const response = await api.post(`/detalle-orden/${id_detalle}`, { cantidad });
+    return response.data;
   }
+  
+  
+  
 };
 
 export default ordenesService;

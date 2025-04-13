@@ -1,20 +1,28 @@
 import React from 'react';
 import { Box, Typography, Button, Divider, Grid } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import CardOrden from '../Cards/CardOrden';
 
-const ResumenOrden = ({ detallesOrden, onDeleteDetalle }) => {
-  const navigate = useNavigate();
+const ResumenOrden = ({ nuevosPlatillos = [], onOrdenar, onVerDetalle, onDeleteDetalle }) => {
+  const agrupados = [];
 
-  const calcularSubtotal = () => {
-    return detallesOrden
-      .reduce((total, detalle) => total + detalle.subtotal, 0)
-      .toFixed(2);
-  };
+  nuevosPlatillos.forEach((nuevo) => {
+    const precio = Number(nuevo.precio);
+    const cantidad = Number(nuevo.cantidad);
 
-  const handleOrder = () => {
-    navigate('/mesero/home');
-  };
+    const existente = agrupados.find(p => p.platillo_id === nuevo.platillo_id);
+    if (existente) {
+      existente.cantidad += cantidad;
+      existente.subtotal += precio * cantidad;
+    } else {
+      agrupados.push({
+        ...nuevo,
+        cantidad,
+        subtotal: precio * cantidad,
+      });
+    }
+  });
+
+  const subtotal = agrupados.reduce((acc, item) => acc + Number(item.subtotal), 0);
 
   return (
     <Box
@@ -31,65 +39,59 @@ const ResumenOrden = ({ detallesOrden, onDeleteDetalle }) => {
         marginLeft: 'auto',
         maxWidth: 480,
         minWidth: 480,
-        fontFamily: 'Poppins, sans-serif'
+        fontFamily: 'Poppins, sans-serif',
       }}
     >
-      <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: '20px', fontFamily: 'Poppins, sans-serif' }}>
-        Detalle de la Orden
+      <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
+        Platillos por agregar
       </Typography>
 
-      <Divider sx={{ marginBottom: '20px' }} />
+      <Divider sx={{ mb: 2 }} />
 
-      <Box
-        sx={{
-          flexGrow: 1,
-          overflowY: 'auto',
-          marginBottom: '20px',
-        }}
-      >
-        <Grid container direction="column" spacing={2}>
-          {detallesOrden.map((detalle) => (
-            <Grid item key={detalle.id_detalle_orden}>
-              <Box sx={{ fontFamily: 'Poppins, sans-serif' }}>
+      <Box sx={{ flexGrow: 1, overflowY: 'auto', mb: 2 }}>
+        {agrupados.length === 0 ? (
+          <Typography sx={{ fontStyle: 'italic', color: '#888', textAlign: 'center', mt: 2 }}>
+            No hay nuevos platillos agregados.
+          </Typography>
+        ) : (
+          <Grid container direction="column" spacing={2}>
+            {agrupados.map((detalle, i) => (
+              <Grid item key={detalle.platillo_id || i}>
                 <CardOrden
-                  pizzaName={detalle.platillo.nombre}
-                  pizzaImage={detalle.platillo.imagen_url}
-                  price={detalle.platillo.precio.toFixed(2)}
-                  quantity={detalle.cantidad}
-                  onDelete={() => onDeleteDetalle(detalle.id_detalle_orden)}
+                  pizzaName={detalle.nombre}
+                  pizzaImage={detalle.imagen_url}
+                  price={Number(detalle.precio)}
+                  quantity={Number(detalle.cantidad)}
+                  onDelete={() => onDeleteDetalle(detalle.platillo_id)}
                 />
-              </Box>
-            </Grid>
-          ))}
-        </Grid>
+              </Grid>
+            ))}
+          </Grid>
+        )}
       </Box>
 
-      <Typography
-        variant="h6"
-        sx={{
-          fontWeight: 'bold',
-          fontFamily: 'Poppins, sans-serif',
-          marginTop: 'auto',
-          textAlign: 'right',
-          paddingBottom: "15px"
-        }}
-      >
-        Subtotal: ${calcularSubtotal()}
-      </Typography>
+      {agrupados.length > 0 && (
+        <Typography textAlign="right" sx={{ fontWeight: 'medium', mb: 1 }}>
+          Subtotal: ${subtotal.toFixed(2)}
+        </Typography>
+      )}
 
       <Button
         variant="contained"
         fullWidth
-        sx={{
-          marginTop: '10px',
-          backgroundColor: '#fe7f2d',
-          fontWeight: 'bold',
-          color: 'white',
-          fontFamily: 'Poppins, sans-serif'
-        }}
-        onClick={handleOrder}
+        sx={{ mt: 1, backgroundColor: '#fe7f2d', fontWeight: 'bold', color: 'white' }}
+        onClick={onOrdenar}
       >
         Ordenar
+      </Button>
+
+      <Button
+        variant="outlined"
+        fullWidth
+        sx={{ mt: 1, borderColor: '#fe7f2d', color: '#fe7f2d', fontWeight: 'bold' }}
+        onClick={onVerDetalle}
+      >
+        Ver detalle completo
       </Button>
     </Box>
   );

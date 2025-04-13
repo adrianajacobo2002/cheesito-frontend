@@ -3,11 +3,13 @@ import { Box, Typography, Button } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import mesasService from '../../services/mesasService';
 import CardDetalle from '../../components/Cards/CardDetalle';
+import CrearOrdenModal from '../../components/Modals/CrearOrdenModal'; // nombre actualizado
 
 const MesaDetalle = () => {
   const { id } = useParams();
   const [ordenes, setOrdenes] = useState([]);
   const [mesaInfo, setMesaInfo] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     const fetchMesa = async () => {
@@ -25,13 +27,14 @@ const MesaDetalle = () => {
 
   const handlePayClick = (orderId) => {
     console.log(`Pagando orden: ${orderId}`);
-    // Aquí podrías llamar a un servicio para marcar como pagada
   };
 
   const handleStatusClick = (orderId) => {
     console.log(`Actualizar estado de orden: ${orderId}`);
-    // Aquí podrías abrir un modal o actualizar el estado
   };
+
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
 
   return (
     <Box sx={{ padding: 4 }}>
@@ -45,6 +48,7 @@ const MesaDetalle = () => {
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
         <Button
           variant="contained"
+          onClick={handleOpenModal}
           sx={{
             backgroundColor: '#fe7f2d',
             borderRadius: '20px',
@@ -75,6 +79,10 @@ const MesaDetalle = () => {
           <Typography>No hay órdenes activas en esta mesa.</Typography>
         )}
       </Box>
+
+      {mesaInfo && (
+        <CrearOrdenModal open={openModal} onClose={handleCloseModal} mesa={mesaInfo} />
+      )}
     </Box>
   );
 };

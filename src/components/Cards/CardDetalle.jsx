@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardContent, Typography, Button, Box, IconButton } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import RemoveRedEyeRoundedIcon from '@mui/icons-material/RemoveRedEyeRounded';
 import { useNavigate } from 'react-router-dom';
 
 const CardDetalle = ({
@@ -15,6 +16,7 @@ const CardDetalle = ({
     // Redirigir a /mesero/ordenar/{orderNumber}
     navigate(`/mesero/ordenar/${orderNumber}`);
   };
+  
 
   return (
     <Card
@@ -96,6 +98,7 @@ const CardDetalle = ({
         </IconButton>
         <Button
           variant="contained"
+          onClick={() => navigate(`/mesero/orden-detalle/${orderNumber}`)}
           sx={{
             backgroundColor: '#f29f05',
             color: 'white',
@@ -105,7 +108,7 @@ const CardDetalle = ({
             fontFamily: 'Poppins, sans-serif',
           }}
         >
-          Por pagar
+          <RemoveRedEyeRoundedIcon/>
         </Button>
       </Box>
     </Card>
