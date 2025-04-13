@@ -36,11 +36,10 @@ const MeseroHome = () => {
   }, []);
 
   const mesasDisponibles = mesas.filter(
-    (mesa) => mesa.estado === "disponible"
+    (mesa) => (mesa.estado === "disponible" && (!mesa.ordenes_activas || mesa.ordenes_activas.length === 0))
   ).length;
-  const mesasOcupadas = mesas.filter(
-    (mesa) => mesa.estado === "ocupado"
-  ).length;
+
+  const mesasOcupadas = mesas.length - mesasDisponibles;
 
   return (
     <Box sx={{ padding: "30px", backgroundColor: "#fff", minHeight: "100vh" }}>
@@ -70,9 +69,12 @@ const MeseroHome = () => {
           const nombresClientes =
             mesa.ordenes_activas?.map((orden) => orden.nombre_cliente) || [];
 
+          // Si hay órdenes activas, consideramos la mesa como ocupada
+          const estadoVisual = nombresClientes.length > 0 ? 'ocupado' : mesa.estado;
+
           const commonProps = {
             num_mesa: mesa.num_mesa,
-            estado: mesa.estado,
+            estado: estadoVisual,
             ordenes_activas: nombresClientes,
             onClick: () => navigate(`mesa-detalle/${mesa.id_mesa}`),
           };

@@ -6,7 +6,6 @@ import Swal from "sweetalert2";
 import CardListo from "../../components/Cards/CardListo";
 import EliminarPlatilloModal from "../../components/Modals/EliminarPlatilloModal";
 
-
 import ordenesService from "../../services/ordenesService";
 import facturaService from "../../services/facturaService";
 
@@ -59,8 +58,10 @@ const OrdenDetalle = () => {
       });
   
       if (result.isConfirmed) {
-        await facturaService.pagarOrden(id);
+        const res = await facturaService.pagarOrden(id);
         Swal.fire("¡Pagado!", "La orden ha sido cancelada exitosamente.", "success");
+        await facturaService.descargarPDF(res.factura.id_factura);
+        console.log("Respuesta de pago:", res);
         const data = await ordenesService.getDetalleOrden(id);
         setOrden(data);
       }

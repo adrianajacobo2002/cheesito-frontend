@@ -75,13 +75,7 @@ const MeseroNavbar = () => {
             </ListItemButton>
           </ListItem>
 
-          <ListItem disablePadding sx={{ marginY: 2, justifyContent: 'center' }}>
-            <ListItemButton component={NavLink} to="/mesero/ordenes" sx={{ justifyContent: 'center', display: 'flex' }}>
-              <ListItemIcon sx={{ justifyContent: 'center' }}>
-                <RoomServiceIcon style={iconStyle} />
-              </ListItemIcon>
-            </ListItemButton>
-          </ListItem>
+          
         </List>
 
         <Divider />

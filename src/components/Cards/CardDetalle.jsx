@@ -69,18 +69,7 @@ const CardDetalle = ({
           paddingTop: 2,
         }}
       >
-        <Button
-          variant="contained"
-          onClick={onPayClick}
-          sx={{
-            backgroundColor: '#fe7f2d',
-            borderRadius: '20px',
-            padding: '5px 20px',
-            fontFamily: 'Poppins, sans-serif',
-          }}
-        >
-          Pagar
-        </Button>
+        
       </Box>
 
       <Box
