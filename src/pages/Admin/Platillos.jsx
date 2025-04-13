@@ -153,14 +153,37 @@ const AdminPlatillos = () => {
                 Stock Disponible
               </Typography>
             </Grid>
-            <Grid item xs={3} container justifyContent="flex-end" sx={{ marginTop: "50px" }}>
-              <Button
-                variant="contained"
-                sx={{ backgroundColor: "#fe7f2d", "&:hover": { backgroundColor: "#e56f1f" }, color: "#fff", fontWeight: "bold", fontFamily: "QuickSand, sans-serif" }}
-                onClick={() => setOpenAgregarModal(true)}
-              >
-                Agregar Platillo
-              </Button>
+            <Grid item xs={3} container justifyContent="flex-end" spacing={2} sx={{ marginTop: "50px" }}>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#fe7f2d",
+                    "&:hover": { backgroundColor: "#e56f1f" },
+                    color: "#fff",
+                    fontWeight: "bold",
+                    fontFamily: "QuickSand, sans-serif"
+                  }}
+                  onClick={() => setOpenAgregarModal(true)}
+                >
+                  Agregar a Stock
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#51bfcc",
+                    "&:hover": { backgroundColor: "#2aa7b6" },
+                    color: "#fff",
+                    fontWeight: "bold",
+                    fontFamily: "QuickSand, sans-serif"
+                  }}
+                  onClick={() => PlatillosService.exportarPDF()}
+                >
+                  Exportar PDF
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
 

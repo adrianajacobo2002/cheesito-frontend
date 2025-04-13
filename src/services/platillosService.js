@@ -40,7 +40,25 @@ const PlatillosService = {
       cantidad: parseInt(cantidad),
     });
     return response.data;
-  }  
+  },  
+
+  exportarPDF: async () => {
+    try {
+      const response = await api.get('/admin/platillos/pdf', {
+        responseType: 'blob', // ← para descargar como archivo
+      });
+  
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'platillos_existencias.pdf');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Error al exportar PDF:', error);
+    }
+  },
   
 };
 
